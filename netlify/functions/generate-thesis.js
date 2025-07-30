@@ -45,7 +45,10 @@ switch (chapter) {
 1.3 Tujuan penelitian
 1.4 Kontribusi penelitian
 1.5 Orisinalitas (buat dalam bentuk tabel)
-Pastikan setiap sub-bab memiliki minimal 5 paragraf yang mendalam dan relevan.`;
+Pastikan setiap sub-bab memiliki minimal 5 paragraf yang mendalam dan relevan.
+Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
+Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
+Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
     break;
 
   case 'bab2':
@@ -53,7 +56,10 @@ Pastikan setiap sub-bab memiliki minimal 5 paragraf yang mendalam dan relevan.`;
 2.1 Tinjauan umum tentang topik yang diangkat
 2.2 Teori-teori relevan yang menjadi landasan kajian
 2.3 Penelitian terdahulu yang relevan (minimal 3 referensi)
-Setiap sub-bab harus dijelaskan secara sistematis dan panjang (minimal 5 paragraf per sub-bab). Kaitkan dengan topik dan rumusan masalah "${problem}".`;
+Setiap sub-bab harus dijelaskan secara sistematis dan panjang (minimal 5 paragraf per sub-bab). Kaitkan dengan topik dan rumusan masalah "${problem}".
+Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
+Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
+Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
     break;
 
   case 'bab3':
@@ -73,7 +79,10 @@ Berikan pengantar pentingnya metodologi dalam penelitian hukum, lalu uraikan sec
 - Uraikan metode seperti studi pustaka, wawancara, observasi hukum, dan jelaskan secara teknis cara pelaksanaannya. ${details.metodePengumpulanData ? `Gunakan metode "${details.metodePengumpulanData}".` : ''}
 
 3.5 Teknik Analisis Data:
-- Bahas tahapan analisis hukum, mulai dari reduksi data, penyajian, hingga penarikan kesimpulan. Tautkan langsung dengan rumusan masalah "${problem}". ${details.modelAnalisis ? `Gunakan teknik "${details.modelAnalisis}".` : ''}`;
+- Bahas tahapan analisis hukum, mulai dari reduksi data, penyajian, hingga penarikan kesimpulan. Tautkan langsung dengan rumusan masalah "${problem}". ${details.modelAnalisis ? `Gunakan teknik "${details.modelAnalisis}".` : ''}
+Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
+Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
+Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
     break;
 
   case 'bab4':
@@ -81,7 +90,10 @@ Berikan pengantar pentingnya metodologi dalam penelitian hukum, lalu uraikan sec
 - Buat struktur sistematis sesuai rumusan masalah.
 - Bahas hasil analisis dengan mengaitkan teori dan data.
 - Setiap bagian harus mengandung minimal 5 paragraf dengan argumen hukum yang mendalam dan kritis.
-- Berikan kesimpulan sementara di akhir tiap bagian.`;
+- Berikan kesimpulan sementara di akhir tiap bagian.
+Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
+Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
+Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
     break;
   default:
         throw new Error('Chapter tidak valid');
