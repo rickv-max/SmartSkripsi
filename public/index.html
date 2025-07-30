@@ -51,7 +51,8 @@
   <div id="form-home" class="form-section">
     <h2 class="text-3xl font-bold mb-2">Fondasi Skripsi</h2>
 
-    <div id="paraphrase-reminder-main" class="paraphrase-reminder">
+    <!-- Kotak Saran Profesional -->
+    <div id="paraphrase-reminder-main" class="paraphrase-reminder mb-6">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
       </svg>
@@ -65,21 +66,31 @@
       </div>
     </div>
 
-    <!-- CTA hanya untuk beranda, sudah dipindah keluar dari paraphrase box -->
-    <div id="homepage-cta" class="hidden mt-6">
+    <p class="text-white mb-6">Setelah mengisi Judul Skripsi & Rumusan Masalah, lanjut ke Garis ☰ pojok kanan atas lalu pilih bab.</p>
+
+    <!-- Input Judul Skripsi -->
+    <div class="space-y-4">
+      <div>
+        <label for="mainThesisTopic" class="form-label">Judul Skripsi Hukum</label>
+        <input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Data Pribadi di Era Digital" class="form-input">
+      </div>
+
+      <!-- Input Rumusan Masalah -->
+      <div>
+        <label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Anda</label>
+        <textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana urgensi pembentukan undang-undang..." class="form-input"></textarea>
+      </div>
+    </div>
+
+    <!-- CTA Alternatif (dipindah ke bawah input) -->
+    <div id="homepage-cta" class="hidden mt-6 text-center">
       <p class="text-sm text-gray-400 mb-2">Website alternatif jika website ini error:</p>
       <a href="https://skripsiotomoatis.netlify.app"
-         class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded transition duration-200">
+         class="inline-block bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded transition duration-200">
         SmartSkripsi Versi 2
       </a>
     </div>
   </div>
-            <p class="text-white mb-6">Setelah mengisi Judul Skripsi & Rumusan Masalah, Lanjut ke Garis ☰ pojok kanan atas lalu pilih bab.</p>
-                <div class="space-y-4">
-                    <div><label for="mainThesisTopic" class="form-label">Judul Skripsi Hukum</label><input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Data Pribadi di Era Digital" class="form-input"></div>
-                    <div><label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Anda</label><textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana urgensi pembentukan undang-undang..." class="form-input"></textarea>
-                </div>
-                </div>
             
             <div id="form-bab1" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab I: Pendahuluan</h2>
