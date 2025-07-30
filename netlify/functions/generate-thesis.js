@@ -89,16 +89,18 @@ Berikan pengantar pentingnya metodologi dalam penelitian hukum, lalu uraikan sec
     
     // ==== KONSTRUKSI REQUEST KE CLAUDE ====
     const requestBody = {
-      model: "anthropic/claude-3-haiku",
-      messages: [
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 4096
-    };
+  model: "anthropic/claude-3-haiku",
+  messages: [
+    {
+      role: "user",
+      content: `Instruksi: Tulis dengan gaya akademik hukum, setiap sub-bab minimal 5 paragraf penuh. Jangan merangkum. Jawaban harus panjang, rinci, dan fokus pada topik berikut.\n\n${prompt}`
+    }
+  ],
+  temperature: 0.7,
+  max_tokens: 8000, // maksimal Claude Haiku
+  top_p: 0.9,
+  stop_sequences: []
+};
 
     const apiURL = "https://openrouter.ai/api/v1/chat/completions";
     let retries = 3;
