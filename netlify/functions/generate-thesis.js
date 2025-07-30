@@ -83,13 +83,24 @@ Berikan pengantar pentingnya metodologi dalam penelitian hukum, lalu uraikan sec
 - Setiap bagian harus mengandung minimal 5 paragraf dengan argumen hukum yang mendalam dan kritis.
 - Berikan kesimpulan sementara di akhir tiap bagian.`;
     break;
-}
-        else {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Bab tidak dikenali.' }),
-      };
+  default:
+        throw new Error('Chapter tidak valid');
     }
+
+    const requestBody = {
+      contents: [{ parts: [{ text: prompt }] }],
+      safetySettings: [
+        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+      ],
+      generationConfig: {
+        temperature: 0.8,
+        topP: 0.95,
+        maxOutputTokens: 8192
+      }
+    };
 
     // ==== KONSTRUKSI REQUEST KE CLAUDE ====
     const requestBody = {
