@@ -101,7 +101,7 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     
     // ==== KONSTRUKSI REQUEST KE CLAUDE ====
     const requestBody = {
-  model: "mistral:moonshot-v1-8k",
+  model: "anthropic/claude-3-haiku",
   messages: [
     {
       role: "user",
@@ -109,7 +109,7 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     }
   ],
   temperature: 0.7,
-  max_tokens: 3500,
+  max_tokens: 8000, // bisa kamu naikkan ke 4000-5000 kalau ingin lebih panjang
   top_p: 0.9,
   stop: []
 };
