@@ -39,6 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         appState.currentView = targetId;
+        const homepageCTA = document.getElementById('homepage-cta');
+        if (homepageCTA) {
+            homepageCTA.classList.toggle('hidden', targetId !== 'form-home');
+        }
         if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
             toggleMenu();
         }
