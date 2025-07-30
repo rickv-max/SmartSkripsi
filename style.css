@@ -1,0 +1,403 @@
+/* ============================================= */
+/* ===== Thesis Architect - Final Stylesheet ===== */
+/* ============================================= */
+
+/* ===== ROOT VARIABLES (Palet Warna) ===== */
+:root {
+    --bg-dark: #111827;
+    --bg-card: #1F2937;
+    --border-color: #374151;
+    --text-light: #F9FAFB;
+    --text-muted: #9CA3AF;
+    --accent-blue: #38BDF8;
+    --accent-blue-hover: #0EA5E9;
+    --danger-color: #F43F5E;
+}
+
+/* ===== GLOBAL STYLES & ANIMATIONS ===== */
+body.dark-mode {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0);
+    background-size: 30px 30px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+#app {
+    height: 100vh;
+}
+#sidebar, #desktop-preview {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    align-self: flex-start;
+}
+
+@media (max-width: 1023px) {
+    #sidebar {
+        position: fixed;
+    }
+}
+/* ===== NAVIGATION (Sidebar) ===== */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.nav-link:hover { background-color: var(--border-color); color: var(--text-light); }
+.nav-link.active { background-color: var(--accent-blue); color: var(--bg-dark); font-weight: 600; }
+.nav-link.completed::after { content: '✔'; margin-left: auto; color: #4ADE80; }
+
+/* ===== FORM STYLES ===== */
+.form-section h2 { /* Ini untuk judul seperti "Fondasi Skripsi", "Bab I", dll. */
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700;
+    margin-bottom: 1.5rem; /* mb-6 */
+}
+.form-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+}
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    color: var(--text-light);
+    transition: all 0.2s;
+}
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
+}
+.text-muted {
+    color: var(--text-muted);
+}
+
+/* ===== BUTTONS ===== */
+button { cursor: pointer; transition: all 0.2s; border: none; }
+.generate-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+    color: white;
+    background-image: linear-gradient(to right, #3B82F6, #2DD4BF);
+    background-size: 200% auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.generate-button .button-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    transition: transform 0.3s ease;
+}
+.generate-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(45, 212, 191, 0.3);
+    background-position: right center;
+}
+.generate-button:hover:not(:disabled) .button-icon { transform: rotate(15deg) scale(1.1); }
+.btn-secondary, .btn-danger {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+}
+.btn-danger { border-color: var(--danger-color); color: var(--danger-color); }
+.btn-secondary:hover:not(:disabled) { background-color: var(--border-color); }
+.btn-danger:hover:not(:disabled) { background-color: var(--danger-color); color: var(--text-light); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.generate-button:disabled { background-image: none; background-color: var(--border-color); }
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.75rem;
+    animation: spin 1s linear infinite;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-left-color: #ffffff;
+}
+
+/* ===== KARTU HASIL & PRATINJAU ===== */
+.prose h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+.prose pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: transparent;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+.result-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    animation: fadeIn 0.5s ease-in-out;
+}
+.result-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+.result-card pre {
+    margin-top: 1rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--text-muted);
+}
+#result-container:empty {
+    border: 2px dashed var(--border-color);
+    border-radius: 0.75rem;
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+}
+#result-container:empty::before {
+    content: "Hasil draf Anda akan muncul di sini...";
+}
+
+/* ========================================================= */
+/* ===== RESPONSIVE DESIGN (Media Queries untuk Ponsel) ===== */
+/* ========================================================= */
+@media (max-width: 640px) {
+    /* Mengecilkan judul utama di setiap halaman */
+    .form-section h2 {
+        font-size: 1.5rem; /* Dari 3xl menjadi 2xl */
+        margin-bottom: 1rem;
+    }
+
+    /* Mengecilkan label form utama */
+    .form-label {
+        font-size: 0.875rem; /* text-sm */
+    }
+
+    /* Mengecilkan teks placeholder */
+    .form-input::placeholder {
+        font-size: 0.875rem;
+    }
+
+    /* Mengecilkan paragraf deskripsi */
+    .text-muted {
+        font-size: 0.875rem;
+    }
+
+    /* Mengecilkan tombol CTA */
+    .generate-button {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .generate-button .button-icon {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Mengecilkan kartu hasil */
+    .result-card {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .result-card pre {
+        font-size: 0.85rem;
+    }
+
+    /* Mengecilkan placeholder hasil */
+    #result-container:empty {
+        padding: 2rem;
+        font-size: 0.9rem;
+    }
+}
+.paraphrase-reminder {
+display: flex;
+align-items: flex-start;
+gap: 1rem; /* Jarak antara ikon dan teks /
+background-color: var(--bg-card);
+border: 1px solid var(--border-color);
+border-left: 4px solid var(--accent-blue); / Aksen di kiri /
+border-radius: 0.75rem;
+padding: 1.5rem;
+margin-top: 2rem; / Jarak dari form di atasnya */
+margin-bottom: 2rem;
+animation: fadeIn 0.8s ease-out;
+}
+
+.paraphrase-reminder svg {
+flex-shrink: 0;
+width: 1.5rem;
+height: 1.5rem;
+color: var(--accent-blue);
+margin-top: 0.125rem;
+}
+
+.paraphrase-reminder p {
+font-size: 0.875rem;
+color: var(--text-muted);
+line-height: 1.6;
+margin: 0;
+}
+
+.paraphrase-reminder p strong {
+color: var(--text-light);
+display: block;
+margin-bottom: 0.25rem;
+}
+
+.paraphrase-reminder a {
+display: inline-block; /* Agar bisa diberi margin-top */
+margin-top: 0.75rem;
+color: var(--accent-blue);
+font-weight: 600;
+text-decoration: none;
+transition: all 0.2s ease;
+font-size: 0.875rem;
+}
+
+.paraphrase-reminder a:hover {
+color: var(--accent-blue-hover);
+transform: translateX(2px); /* Efek hover kecil */
+}
+/* ========================================================= */
+/* ===== GAYA UNTUK LOADING SCREEN MODERN (VERSI BERSIH) ===== */
+/* ========================================================= */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Kontainer utama yang menutupi seluruh layar */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-dark);
+    z-index: 9999;
+    transition: opacity 0.8s ease-out 0.5s, visibility 0.8s ease-out 0.5s;
+    /* PENTING: display: flex telah dihapus untuk menghindari konflik */
+}
+
+/* Kelas untuk menyembunyikan loading screen */
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Konten di tengah loading screen (Metode Penempatan Baru) */
+.loading-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Trik centering paling andal */
+    text-align: center;
+    width: 100%; /* Pastikan tidak menyusut */
+}
+
+/* Animasi Staggered (muncul satu per satu) untuk setiap elemen */
+.loading-logo, .loading-spinner-main, .loading-text, .loading-creator {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.loading-logo {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-light);
+    animation-delay: 0.2s;
+}
+
+/* Definisikan keyframes untuk animasi pengisian */
+@keyframes loading-fill {
+    100% {inset: 0}
+}
+
+.loader {
+  width: 150px; /* Sedikit lebih lebar agar terlihat bagus */
+  height: 20px; /* Sedikit lebih ramping */
+  border-radius: 20px;
+  color: var(--accent-blue); /* Menggunakan warna aksen kita */
+  border: 2px solid;
+  position: relative;
+  
+  /* Menempatkannya di antara logo dan teks */
+  margin: 1.5rem auto;
+
+  /* Menerapkan animasi staggered seperti elemen lainnya */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.4s; /* Muncul kedua */
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  margin: 2px;
+  inset: 0 100% 0 0;
+  border-radius: inherit;
+  background: currentColor; /* Menggunakan warna dari parent (.loader) */
+  animation: loading-fill 3s forwards cubic-bezier(0.4, 0.2, 0.2, 1); /* Animasi pengisian, 2 detik, dengan easing yang lebih halus */
+}
+
+.loading-text {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    animation-delay: 0.6s;
+}
+
+/* Nama Anda (Metode Penempatan Baru) */
+.loading-creator {
+    position: absolute; /* Sekarang relatif terhadap .loading-screen */
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    animation-delay: 0.8s;
+}
+.loading-creator strong {
+    color: var(--text-light);
+    font-weight: 500;
+}
