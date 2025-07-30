@@ -30,7 +30,7 @@ exports.handler = async (event) => {
     // ==== RANGKAI PROMPT ====
     let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
 Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
-Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam beberapa paragraf yang kaya analisis.
+Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam lima paragraf yang kaya analisis.
 
 Informasi dasar untuk draf ini adalah sebagai berikut:
 - Topik Penelitian: "${topic}"
