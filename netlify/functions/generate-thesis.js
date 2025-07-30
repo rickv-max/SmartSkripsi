@@ -28,47 +28,61 @@ exports.handler = async (event) => {
     }
 
     // ==== RANGKAI PROMPT ====
-    let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
-Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
-Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam lima paragraf yang kaya analisis.
+    let prompt = `Anda adalah asisten penulisan akademik di bidang hukum. Tugas Anda adalah menyusun draf skripsi yang komprehensif dan berbobot secara ilmiah berdasarkan struktur bab yang diberikan.
 
-Informasi dasar untuk draf ini adalah sebagai berikut:
-- Topik Penelitian: "${topic}"
-- Rumusan Masalah: "${problem}"
+Gunakan Bahasa Indonesia akademik yang formal, objektif, dan sistematis. Jangan merangkum — melainkan kembangkan setiap poin menjadi **minimal 5 paragraf per sub-bab**. Paragraf harus kaya analisis hukum, berlandaskan teori dan metode hukum yang berlaku di Indonesia.
 
+Berikan penjelasan yang menyeluruh, seolah-olah pembaca tidak mengetahui apa-apa tentang topik tersebut. 
+
+Gunakan data berikut sebagai dasar penulisan:
+- **Topik Penelitian:** "${topic}"
+- **Rumusan Masalah:** "${problem}"
+- **Preferensi Tambahan dari Pengguna:** ${JSON.stringify(details)}
+
+Struktur bab yang harus dikembangkan:`;
+
+     if (chapter === 'bab1') {
+    prompt = `
+Kamu adalah seorang pakar hukum dan akademisi yang sangat berpengalaman. Tugasmu adalah menulis Bab I Pendahuluan dari skripsi hukum berdasarkan input berikut:
+Topik: ${topic}
+Rumusan Masalah: ${problem}
+Tulis setiap sub-bab berikut secara mendalam, dengan masing-masing sub-bab terdiri dari minimal 5 paragraf analitis. Gunakan gaya bahasa akademik hukum yang sistematis dan mengedepankan logika. Penulisan harus menggambarkan urgensi, konteks, dan konstruksi ilmiah dari penelitian.
+1.1 Latar Belakang: Uraikan situasi hukum saat ini terkait topik, masalah yang muncul, dampaknya, serta mengapa isu ini penting untuk dikaji.
+1.2 Rumusan Masalah: Jelaskan rumusan masalah secara filosofis, yuridis, dan sosiologis, serta jelaskan cara pertanyaan ini akan dijawab.
+1.3 Tujuan Penelitian: Uraikan tujuan penelitian dari sisi teoritis dan praktis, serta bagaimana penelitian ini akan memberikan kontribusi terhadap pengembangan hukum.
+1.4 Kontribusi Penelitian: Jelaskan kontribusi akademik, kebijakan, atau solusi praktis yang ditawarkan dari hasil penelitian.
+1.5 Orisinalitas Penelitian: Buat dalam bentuk tabel yang menampilkan 3–5 penelitian terdahulu, penulisnya, fokusnya, dan bedanya dengan penelitian ini.
 `;
-
-    if (chapter === 'bab1') {
-      prompt += `Struktur BAB I - PENDAHULUAN:
-1.1 Latar belakang
-1.2 Rumusan masalah
-1.3 Tujuan penelitian
-1.4 Kontribusi penelitian
-1.5 Orisinalitas penelitian (buat dalam bentuk tabel dengan pembeda dari karya sebelumnya)`;
-    } else if (chapter === 'bab2') {
-      prompt += `Struktur BAB II - TINJAUAN PUSTAKA:
-2.1 Tinjauan Umum
-2.2 Tinjauan Teori (relevan dengan topik)
-2.3 Penelitian Terdahulu (minimal 3 dengan penjelasan poin per poin)`;
-    } else if (chapter === 'bab3') {
-      const pendekatan = details?.pendekatan || '';
-      const jenis = details?.jenis || '';
-      const lokasi = details?.lokasi || '';
-      const metodePengumpulanData = details?.metodePengumpulanData || '';
-      const modelAnalisis = details?.modelAnalisis || '';
-
-      prompt += `Struktur BAB III - METODOLOGI PENELITIAN:
-Tuliskan secara mendalam dan terstruktur:
-3.1 Pendekatan Penelitian: ${pendekatan}
-3.2 Jenis Penelitian: ${jenis}
-3.3 Lokasi Penelitian: ${lokasi}
-3.4 Metode Pengumpulan Data: ${metodePengumpulanData}
-3.5 Model Analisis Data: ${modelAnalisis}`;
-    } else if (chapter === 'bab4') {
-      prompt += `Struktur BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
-Gunakan pola sistematis untuk membahas hasil penelitian secara kritis dan menyeluruh.
-Analisis harus terikat dengan teori dan rumusan masalah.
-Buat struktur penulisan yang logis, tidak bersifat naratif umum.`;
+  } else if (chapter === 'bab2') {
+    prompt = `
+Tulis Bab II Tinjauan Pustaka untuk skripsi hukum berdasarkan topik berikut:
+Topik: ${topic}
+Tuliskan seluruh bagian dengan pendekatan sistematis. Setiap sub-bab minimal terdiri dari 5 paragraf yang menjelaskan kerangka konseptual dan posisi teoritis yang relevan dengan topik. Hindari penjabaran ringkas. 
+2.1 Tinjauan Umum: Bahas perkembangan hukum terkait topik dari sisi historis, regulasi nasional dan internasional.
+2.2 Tinjauan Teori: Paparkan teori-teori hukum yang relevan (misalnya teori keadilan, utilitarianisme, hukum progresif), lengkap dengan pendapat ahli dan relevansinya dengan penelitian.
+2.3 Penelitian Terdahulu: Ulas setidaknya 3 penelitian ilmiah (tesis, jurnal, atau disertasi) secara kritis dan bandingkan pendekatannya dengan penelitian ini.
+`;
+  } else if (chapter === 'bab3') {
+    prompt = `
+Tulis Bab III Metodologi Penelitian untuk skripsi hukum dengan topik:
+Topik: ${topic}
+Sertakan pengantar yang menjelaskan peran penting metode dalam karya ilmiah hukum, dan penutup yang menyimpulkan kenapa pendekatan metodologis ini paling tepat untuk menjawab rumusan masalah.
+Tulis setiap sub-bab berikut dalam minimal 5 paragraf:
+3.1 Pendekatan Penelitian: Jelaskan pendekatan normatif, empiris, atau kombinasi, dan alasan pemilihannya.
+3.2 Jenis Penelitian: Uraikan apakah termasuk penelitian deskriptif, eksplanatoris, atau lainnya, dengan contoh konkret.
+3.3 Lokasi Penelitian: Jelaskan alasan pemilihan lokasi dan relevansinya terhadap data dan objek hukum yang dikaji.
+3.4 Metode Pengumpulan Data: Jelaskan metode seperti studi dokumen, wawancara, atau observasi, dan validitasnya.
+3.5 Model Analisis Data: Jelaskan model analisis (misal: kualitatif, yuridis-normatif) yang digunakan untuk mengolah data agar sampai pada kesimpulan.
+`;
+  } else if (chapter === 'bab4') {
+    prompt = `
+Tulis Bab IV Hasil Penelitian dan Pembahasan berdasarkan topik dan rumusan masalah berikut:
+Topik: ${topic}
+Rumusan Masalah: ${problem}
+Strukturkan isi bab ini agar mampu menjawab setiap rumusan masalah dengan analisis yuridis yang mendalam. Gunakan pendekatan normatif dan empiris bila tersedia. 
+Setiap bagian pembahasan wajib disajikan dalam minimal 5 paragraf. Gunakan referensi hukum (UU, yurisprudensi, teori) secara eksplisit. Akhiri dengan penilaian kritis dan sintesis akademik terhadap hasil.
+Jika pengguna belum menyelesaikan penelitiannya, simulasikan pembahasan berdasarkan data atau argumen hukum yang rasional.
+`;
     } else {
       return {
         statusCode: 400,
