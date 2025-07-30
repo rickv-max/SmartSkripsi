@@ -109,9 +109,9 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     }
   ],
   temperature: 0.7,
-  max_tokens: 8000, // maksimal Claude Haiku
+  max_tokens: 3500,
   top_p: 0.9,
-  stop_sequences: []
+  stop: []
 };
 
     const apiURL = "https://openrouter.ai/api/v1/chat/completions";
@@ -124,7 +124,7 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
         headers: {
           'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://yourdomain.netlify.app/',
+          'HTTP-Referer': 'https://smartskripsi.netlify.app/',
           'X-Title': 'ThesisArchitect'
         },
         body: JSON.stringify(requestBody)
