@@ -101,7 +101,7 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     
     // ==== KONSTRUKSI REQUEST KE CLAUDE ====
     const requestBody = {
-  model: "anthropic/claude-3-haiku",
+  model: "moonshot-v1-8k",
   messages: [
     {
       role: "user",
