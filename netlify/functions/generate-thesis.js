@@ -100,7 +100,7 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     // ==== KONSTRUKSI REQUEST KE GROK AI ====
     const requestBody = {
       // Menggunakan model 'grok-4-latest' sesuai permintaan
-      model: "grok-4-latest", 
+      model: "grok-1.5", 
       messages: [
         {
           role: "system",
@@ -118,7 +118,7 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
       stream: false
     };
 
-    const apiURL = "https://api.x.ai/api/v1/chat/completions";
+    const apiURL = "https://api.x.ai/v1/chat/completions";
     let retries = 3;
     let responseData;
 
