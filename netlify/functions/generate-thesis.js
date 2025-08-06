@@ -153,10 +153,19 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     };
 
   } catch (error) {
-    console.error('Terjadi error:', error.message);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
+  console.error("🔥 ERROR DETAIL:", error);
+
+  if (error.response && error.response.data) {
+    console.error("🔥 RESPONSE ERROR DATA:", error.response.data);
+    throw new Error("Grok AI gagal: " + JSON.stringify(error.response.data));
+  } else if (error.request) {
+    // Permintaan dikirim tapi tidak ada respons
+    console.error("🔥 NO RESPONSE:", error.request);
+    throw new Error("Grok AI gagal: Tidak ada respons dari server Grok.");
+  } else {
+    // Terjadi error saat setup request
+    console.error("🔥 REQUEST SETUP ERROR:", error.message);
+    throw new Error("Grok AI gagal: " + error.message);
   }
+}
 };
