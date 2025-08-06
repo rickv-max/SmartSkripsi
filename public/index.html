@@ -81,14 +81,24 @@
                     <!-- Daftar sub-bab Bab I akan muncul di sini -->
                 </div>
             </div>
-
+            
             <div id="form-bab2" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab II: Tinjauan Pustaka</h2>
+                <!-- Area Input Khusus untuk Bab 2 -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="bab2-custom-subchapters" class="form-label">Kerangka Sub-Bab Anda</label>
+                        <p class="text-sm text-gray-400 mb-2">Masukkan semua judul sub-bab untuk Bab II di sini, satu judul per baris. Contoh:<br>2.1 Landasan Teori<br>2.2 Kerangka Berpikir</p>
+                        <textarea id="bab2-custom-subchapters" rows="6" class="form-input"></textarea>
+                    </div>
+                    <button id="load-bab2-button" class="btn-secondary">Muat Sub-Bab ke Daftar Pilihan</button>
+                </div>
+                <hr class="my-6 border-border">
+                <!-- Container di mana pilihan sub-bab dinamis akan muncul -->
                 <div class="sub-chapter-container">
-                    <!-- Daftar sub-bab Bab II akan muncul di sini -->
+                    <p class="text-muted">Daftar pilihan sub-bab akan muncul di sini setelah Anda mengklik "Muat Sub-Bab".</p>
                 </div>
             </div>
-
             <div id="form-bab3" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab III: Metode Penelitian</h2>
                 <div class="sub-chapter-container">
