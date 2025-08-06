@@ -14,10 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearAllBtn = document.getElementById('clearAllBtn');
     const desktopPreview = document.getElementById('thesisContent');
 
-    // DATA BARU: Struktur sekarang berisi objek dengan detail input opsional
+    // DATA STRUKTUR LENGKAP: Bab 2 ditandai sebagai 'custom'
     const chaptersData = {
         'bab1': {
             title: 'BAB I: PENDAHULUAN',
+            isCustom: false,
             subChapters: [
                 { title: '1.1 Latar Belakang' },
                 { title: '1.2 Rumusan Masalah' },
@@ -28,14 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'bab2': {
             title: 'BAB II: TINJAUAN PUSTAKA',
-            subChapters: [
-                { title: '2.1 Tinjauan Umum tentang Topik' },
-                { title: '2.2 Teori-teori Relevan', input: { id: 'teoriInput', label: 'Sebutkan teori yang ingin diprioritaskan (Contoh: Teori Keadilan, Teori Utilitarianisme)' } },
-                { title: '2.3 Penelitian Terdahulu yang Relevan' }
-            ]
+            isCustom: true // Bab 2 adalah custom
         },
         'bab3': {
             title: 'BAB III: METODE PENELITIAN',
+            isCustom: false,
             subChapters: [
                 { title: '3.1 Pendekatan Penelitian', input: { id: 'pendekatanInput', label: 'Pendekatan yang Digunakan (Contoh: Yuridis Empiris)' } },
                 { title: '3.2 Jenis Penelitian', input: { id: 'jenisInput', label: 'Jenis Penelitian (Contoh: Deskriptif Analitis)' } },
@@ -46,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'bab4': {
             title: 'BAB IV: PEMBAHASAN',
+            isCustom: false,
             subChapters: [
                 { title: 'Pembahasan Rumusan Masalah Pertama' },
                 { title: 'Pembahasan Rumusan Masalah Kedua' }
@@ -62,13 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
         menuCloseIcon.classList.toggle('hidden');
     };
 
-    const renderSubChapterOptions = (chapterId, container) => {
+    const renderSubChapterOptions = (chapterId, container, customSubChapters = null) => {
         container.innerHTML = '';
-        if (!chaptersData[chapterId]) return;
+        const chapterConfig = chaptersData[chapterId];
+        if (!chapterConfig) return;
 
-        const optionsHtml = chaptersData[chapterId].subChapters.map((sub, index) => {
+        const subChaptersSource = customSubChapters || chapterConfig.subChapters;
+        if (!subChaptersSource) {
+            container.innerHTML = `<p class="text-muted">Daftar pilihan sub-bab akan muncul di sini.</p>`;
+            return;
+        };
+
+        const optionsHtml = subChaptersSource.map((sub, index) => {
+            const subTitle = typeof sub === 'string' ? sub : sub.title;
             const sanitizedId = `${chapterId}-sub-${index}`;
-            const detailInputHtml = sub.input
+            const detailInputHtml = (typeof sub === 'object' && sub.input)
                 ? `<div id="detail-for-${sanitizedId}" class="hidden mt-2 ml-7">
                      <label for="${sub.input.id}" class="form-label text-sm">${sub.input.label}</label>
                      <textarea id="${sub.input.id}" rows="2" class="form-input text-sm"></textarea>
@@ -78,8 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
                 <div class="sub-chapter-option-wrapper mb-2">
                     <div class="flex items-center">
-                        <input type="radio" id="${sanitizedId}" name="subchapter-${chapterId}" value="${sub.title}" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
-                        <label for="${sanitizedId}" class="ml-3 block text-sm font-medium text-light">${sub.title}</label>
+                        <input type="radio" id="${sanitizedId}" name="subchapter-${chapterId}" value="${subTitle}" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                        <label for="${sanitizedId}" class="ml-3 block text-sm font-medium text-light">${subTitle}</label>
                     </div>
                     ${detailInputHtml}
                 </div>`;
@@ -103,8 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.type === 'radio') {
                 newGenerateButton.disabled = false;
                 formSection.querySelectorAll('[id^="detail-for-"]').forEach(div => div.classList.add('hidden'));
-                const detailDiv = formSection.querySelector(`#detail-for-${e.target.id}`);
-                if (detailDiv) detailDiv.classList.remove('hidden');
+                
+                const subConfig = subChaptersSource.find(s => (typeof s === 'string' ? s : s.title) === e.target.value);
+                if (subConfig && typeof subConfig === 'object' && subConfig.input) {
+                    const detailDiv = formSection.querySelector(`#detail-for-${e.target.id}`);
+                    if (detailDiv) detailDiv.classList.remove('hidden');
+                }
             }
         });
 
@@ -112,9 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedRadio = formSection.querySelector(`input[name="subchapter-${chapterId}"]:checked`);
             if (selectedRadio) {
                 let detailValue = '';
-                const detailInputId = chaptersData[chapterId].subChapters.find(s => s.title === selectedRadio.value)?.input?.id;
-                if (detailInputId) {
-                    const detailInput = formSection.querySelector(`#${detailInputId}`);
+                const subConfig = subChaptersSource.find(s => (typeof s === 'string' ? s : s.title) === selectedRadio.value);
+                if (subConfig && typeof subConfig === 'object' && subConfig.input) {
+                    const detailInput = formSection.querySelector(`#${subConfig.input.id}`);
                     if (detailInput) detailValue = detailInput.value;
                 }
                 generateSubChapter(selectedRadio, detailValue, newGenerateButton);
@@ -128,12 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetSection) {
             targetSection.classList.remove('hidden');
             const chapterId = targetId.replace('form-', '');
-            const subChapterContainer = targetSection.querySelector('.sub-chapter-container');
-            if (subChapterContainer) renderSubChapterOptions(chapterId, subChapterContainer);
+            
+            if (chaptersData[chapterId] && !chaptersData[chapterId].isCustom) {
+                const subChapterContainer = targetSection.querySelector('.sub-chapter-container');
+                if (subChapterContainer) renderSubChapterOptions(chapterId, subChapterContainer);
+            }
         }
-        navLinks.forEach(link => {
-            link.classList.toggle('active', link.dataset.target === targetId);
-        });
+        navLinks.forEach(link => link.classList.toggle('active', link.dataset.target === targetId));
         appState.currentView = targetId;
         const homepageCTA = document.getElementById('homepage-cta');
         if (homepageCTA) homepageCTA.classList.toggle('hidden', targetId !== 'form-home');
@@ -157,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function generateSubChapter(radioElement, detail, button) {
         const buttonTextSpan = button.querySelector('.button-text');
-        const originalButtonText = buttonTextSpan.textContent;
+        const originalButtonText = "Bangun Draf Sub-Bab"; // Define original text
         button.disabled = true;
         button.innerHTML = `<span class="loading-spinner"></span><span>Membangun...</span>`;
         
@@ -166,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!appState.topic || !appState.problem) {
             alert('Harap isi Topik dan Rumusan Masalah utama terlebih dahulu.');
             button.disabled = false;
-            buttonTextSpan.textContent = originalButtonText;
+            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 button-icon"><path d="M10.868 2.884c.321.077.635.148.942.22a.75.75 0 01.706.853l-.612 3.06a.75.75 0 00.298.635l2.525 2.148a.75.75 0 01-.247 1.293l-3.374.692a.75.75 0 00-.573.433l-1.42 3.108a.75.75 0 01-1.33.001l-1.42-3.108a.75.75 0 00-.573-.433l-3.374-.692a.75.75 0 01-.247-1.293l2.525-2.148a.75.75 0 00.298-.635l-.612-3.06a.75.75 0 01.706-.853c.307-.072.62-.143.942-.22z"/></svg><span class="button-text">${originalButtonText}</span>`;
             switchView('form-home');
             return;
         }
@@ -175,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             topic: appState.topic, 
             problem: appState.problem, 
             subChapterTitle: radioElement.value,
-            detail: detail // Kirim detail tambahan
+            detail: detail
         };
 
         try {
@@ -193,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 appState.generated[chapterId] = existingContent + data.text + '\n\n';
                 updateDesktopPreview();
                 
-                // SOLUSI MASALAH TAMPILAN: Buat dan sisipkan hasil di bawah radio button
                 const wrapper = radioElement.closest('.sub-chapter-option-wrapper');
                 if (wrapper) {
                     let resultDiv = wrapper.querySelector('.generated-result');
@@ -206,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
 
-                radioElement.disabled = true; // Nonaktifkan radio yang sudah selesai
+                radioElement.disabled = true;
                 document.querySelector(`.nav-link[data-target="form-${chapterId}"]`).classList.add('completed');
             } else { 
                 throw new Error("Respons dari server tidak berisi teks."); 
@@ -244,13 +255,36 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm('Apakah Anda yakin ingin menghapus semua hasil?')) {
             appState.generated = {};
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('completed'));
-            // Hapus semua hasil yang dibuat secara dinamis
             document.querySelectorAll('.generated-result').forEach(el => el.remove());
-            // Reset semua radio button
-            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.disabled = false);
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.disabled = false;
+                radio.checked = false;
+            });
+            // Reset juga tampilan bab custom
+            const bab2Container = document.querySelector('#form-bab2 .sub-chapter-container');
+            if (bab2Container) {
+                 bab2Container.innerHTML = `<p class="text-muted">Daftar pilihan sub-bab akan muncul di sini setelah Anda mengklik "Muat Sub-Bab".</p>`;
+            }
             updateDesktopPreview();
         }
     });
+
+    // EVENT LISTENER KHUSUS UNTUK TOMBOL BAB 2
+    const loadBab2Button = document.getElementById('load-bab2-button');
+    if (loadBab2Button) {
+        loadBab2Button.addEventListener('click', () => {
+            const textarea = document.getElementById('bab2-custom-subchapters');
+            const subChapterContainer = document.querySelector('#form-bab2 .sub-chapter-container');
+            
+            const customSubChapters = textarea.value.split('\n').filter(line => line.trim() !== '');
+            
+            if (customSubChapters.length > 0) {
+                renderSubChapterOptions('bab2', subChapterContainer, customSubChapters);
+            } else {
+                subChapterContainer.innerHTML = `<p class="text-muted">Harap masukkan setidaknya satu judul sub-bab di kotak di atas.</p>`;
+            }
+        });
+    }
 
     // INISIALISASI
     switchView('form-home');
