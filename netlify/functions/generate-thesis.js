@@ -5,7 +5,6 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  // 1. Ganti ke GEMINI_API_KEY
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   if (!GEMINI_API_KEY) {
     return {
@@ -26,7 +25,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // ==== RANGKAI PROMPT (TIDAK ADA PERUBAHAN DI BAGIAN INI) ====
+    // ==== RANGKAI PROMPT (TIDAK ADA PERUBAHAN) ====
     let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
 Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
 Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam beberapa paragraf yang kaya analisis.
@@ -98,7 +97,6 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
         throw new Error('Chapter tidak valid');
     }
     
-    // 2. KONSTRUKSI REQUEST KE GEMINI API
     const systemInstruction = "Anda adalah asisten penulisan akademis ahli hukum. Tulis dengan gaya akademik hukum, setiap sub-bab minimal 5 paragraf penuh. Jangan merangkum. Jawaban harus panjang, rinci, dan fokus pada topik yang diberikan. Gunakan bahasa Indonesia yang formal dan terstruktur.";
     const fullPrompt = `${systemInstruction}\n\n---\n\n${prompt}`;
 
@@ -111,14 +109,19 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
       generationConfig: {
         temperature: 0.7,
         topP: 0.9,
-        maxOutputTokens: 8192, // Batas standar Gemini
+        maxOutputTokens: 8192,
       }
     };
 
-    // 3. Ganti URL API ke endpoint Gemini
-    const model = 'gemini-1.5-flash-latest'; // Model yang cepat dan mampu menangani token besar
+    const model = 'gemini-1.5-flash-latest';
     const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
     
+    // ==== LOGGING TAMBAHAN UNTUK DEBUGGING ====
+    console.log("🚀 Mengirim permintaan ke Gemini...");
+    // Kita tidak akan log URL lengkap karena mengandung API Key, cukup body-nya.
+    console.log("📦 Request Body:", JSON.stringify(requestBody, null, 2));
+    // ===========================================
+
     const apiResponse = await fetch(apiURL, {
       method: 'POST',
       headers: {
@@ -129,7 +132,6 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
 
     const responseData = await apiResponse.json();
 
-    // 4. Penanganan Error & Respons Spesifik Gemini
     if (responseData.error) {
       const errorDetails = JSON.stringify(responseData.error);
       console.error("🔥 Gemini API Error Response:", errorDetails);
