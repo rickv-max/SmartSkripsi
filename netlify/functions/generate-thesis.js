@@ -25,8 +25,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // ==== RANGKAI PROMPT (TIDAK ADA PERUBAHAN DI BAGIAN INI) ====
-    // PROMPT DASAR
+    // ==== RANGKAI PROMPT (TIDAK ADA PERUBAHAN) ====
     let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
 Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
 Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam beberapa paragraf yang kaya analisis.
@@ -36,6 +35,7 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
 - Rumusan Masalah: "${problem}"\n\n`;
 
     switch (chapter) {
+      // ... (semua case switch Anda tetap sama, tidak perlu diubah)
       case 'bab1':
         prompt += `Struktur BAB I - PENDAHULUAN:
 1.1 Latar belakang
@@ -97,9 +97,8 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
         throw new Error('Chapter tidak valid');
     }
     
-    // ==== KONSTRUKSI REQUEST KE GROK AI ====
     const requestBody = {
-      // Menggunakan model 'grok-4-latest' sesuai permintaan
+      // PASTIKAN model ini tersedia untuk API Key Anda.
       model: "grok-1.5", 
       messages: [
         {
@@ -119,53 +118,44 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     };
 
     const apiURL = "https://api.x.ai/v1/chat/completions";
-    let retries = 3;
-    let responseData;
+    
+    const apiResponse = await fetch(apiURL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROK_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
 
-    while (retries > 0) {
-      const apiResponse = await fetch(apiURL, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${GROK_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
+    const responseData = await apiResponse.json();
 
-      responseData = await apiResponse.json();
-
-      if (apiResponse.status !== 503) break;
-
-      console.warn('Model overloaded, mencoba ulang...');
-      await new Promise(res => setTimeout(res, 2000));
-      retries--;
-    }
-
+    // ==== PENANGANAN ERROR API YANG ROBUST ====
     if (responseData.error) {
-      throw new Error(`Grok AI gagal: ${responseData.error.message}`);
+      // Mengubah seluruh objek error menjadi string agar detailnya tidak hilang
+      const errorDetails = JSON.stringify(responseData.error);
+      console.error("🔥 Grok AI API Error Response:", errorDetails);
+      throw new Error(`Grok AI gagal: ${errorDetails}`);
+    }
+    
+    if (!responseData.choices || responseData.choices.length === 0) {
+      console.error("🔥 Respons tidak valid dari Grok AI (tidak ada 'choices'):", JSON.stringify(responseData));
+      throw new Error("Respons tidak valid atau kosong dari Grok AI.");
     }
 
     const resultText = responseData.choices?.[0]?.message?.content;
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ text: resultText || '(kosong)' })
+      body: JSON.stringify({ text: resultText || '(Respons berhasil namun teks kosong)' })
     };
 
   } catch (error) {
-  console.error("🔥 ERROR DETAIL:", error);
-
-  if (error.response && error.response.data) {
-    console.error("🔥 RESPONSE ERROR DATA:", error.response.data);
-    throw new Error("Grok AI gagal: " + JSON.stringify(error.response.data));
-  } else if (error.request) {
-    // Permintaan dikirim tapi tidak ada respons
-    console.error("🔥 NO RESPONSE:", error.request);
-    throw new Error("Grok AI gagal: Tidak ada respons dari server Grok.");
-  } else {
-    // Terjadi error saat setup request
-    console.error("🔥 REQUEST SETUP ERROR:", error.message);
-    throw new Error("Grok AI gagal: " + error.message);
+    // ==== BLOK CATCH UNTUK SEMUA ERROR TAK TERDUGA ====
+    console.error("🔥 Terjadi error fatal dalam handler:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
   }
-}
 };
