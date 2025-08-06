@@ -1,12 +1,10 @@
-// public/js/app.js (VERSI FINAL DENGAN PENGAMBILAN DATA FORMULIR LENGKAP)
-
 document.addEventListener('DOMContentLoaded', () => {
-    // STATE & CACHE
+    // STATE & CACHE (Tidak ada perubahan)
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
         setTimeout(() => {
             loadingScreen.classList.add('hidden');
-        }, 3400); // 100 milidetik sudah cukup
+        }, 3400);
     }
     const appState = { topic: '', problem: '', generated: {}, currentView: 'form-home' };
     const navLinks = document.querySelectorAll('.nav-link');
@@ -15,12 +13,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuOpenIcon = document.getElementById('menu-open-icon');
     const menuCloseIcon = document.getElementById('menu-close-icon');
     const sidebarOverlay = document.getElementById('sidebar-overlay');
-    const generateButtons = document.querySelectorAll('.generate-button');
+    // Tombol generate sekarang dibuat dinamis, jadi kita tidak memilihnya di awal
     const copyAllBtn = document.getElementById('copyAllBtn');
     const clearAllBtn = document.getElementById('clearAllBtn');
 
+    // =====================================================================
+    // DATA BARU: Struktur Bab dan Sub-Bab untuk UI dinamis
+    // =====================================================================
+    const chaptersData = {
+        'bab1': {
+            title: 'BAB I: PENDAHULUAN',
+            subChapters: [ '1.1 Latar Belakang', '1.2 Rumusan Masalah', '1.3 Tujuan Penelitian', '1.4 Kontribusi Penelitian', '1.5 Orisinalitas' ]
+        },
+        'bab2': {
+            title: 'BAB II: TINJAUAN PUSTAKA',
+            subChapters: [ '2.1 Tinjauan Umum tentang Topik', '2.2 Teori-teori Relevan', '2.3 Penelitian Terdahulu yang Relevan' ]
+        },
+        'bab3': {
+            title: 'BAB III: METODE PENELITIAN',
+            subChapters: [ '3.1 Pendekatan Penelitian', '3.2 Jenis Penelitian', '3.3 Lokasi atau Ruang Lingkup Penelitian', '3.4 Teknik Pengumpulan Data', '3.5 Teknik Analisis Data' ]
+        },
+        'bab4': {
+            title: 'BAB IV: PEMBAHASAN',
+            subChapters: [ 'Pembahasan Rumusan Masalah Pertama', 'Pembahasan Rumusan Masalah Kedua' ]
+        }
+    };
+    // =====================================================================
+
+
     // FUNGSI INTI
-    const toggleMenu = () => {
+    const toggleMenu = () => { // Tidak ada perubahan
         sidebar.classList.toggle('-translate-x-full');
         sidebar.classList.toggle('translate-x-0');
         sidebarOverlay.classList.toggle('hidden');
@@ -28,10 +50,63 @@ document.addEventListener('DOMContentLoaded', () => {
         menuCloseIcon.classList.toggle('hidden');
     };
 
-    const switchView = (targetId) => {
+    // FUNGSI BARU: Untuk merender pilihan sub-bab dan tombolnya
+    const renderSubChapterOptions = (chapterId, container) => {
+        container.innerHTML = ''; // Kosongkan container dulu
+        if (!chaptersData[chapterId]) return;
+
+        // Buat daftar pilihan
+        const optionsHtml = chaptersData[chapterId].subChapters.map(subChapter => `
+            <div class="sub-chapter-option flex items-center mb-3">
+                <input type="radio" id="${subChapter.replace(/\s+/g, '-')}" name="subchapter-${chapterId}" value="${subChapter}" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                <label for="${subChapter.replace(/\s+/g, '-')}" class="ml-3 block text-sm font-medium text-light">${subChapter}</label>
+            </div>
+        `).join('');
+        
+        container.innerHTML = `
+            <div class="space-y-4">
+                <label class="form-label">Pilih sub-bab yang ingin dibuat:</label>
+                ${optionsHtml}
+            </div>
+            <button class="generate-button mt-6" data-chapter="${chapterId}" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 button-icon"><path fill-rule="evenodd" d="M10.868 2.884c.321.077.635.148.942.22a.75.75 0 01.706.853l-.612 3.06a.75.75 0 00.298.635l2.525 2.148a.75.75 0 01-.247 1.293l-3.374.692a.75.75 0 00-.573.433l-1.42 3.108a.75.75 0 01-1.33.001l-1.42-3.108a.75.75 0 00-.573-.433l-3.374-.692a.75.75 0 01-.247-1.293l2.525-2.148a.75.75 0 00.298-.635l-.612-3.06a.75.75 0 01.706-.853c.307-.072.62-.143.942-.22z" clip-rule="evenodd" /></svg>
+                <span class="button-text">Bangun Draf Sub-Bab</span>
+            </button>
+        `;
+
+        // Tambahkan event listener untuk radio button dan tombol generate yang baru dibuat
+        const formSection = document.getElementById(`form-${chapterId}`);
+        const newGenerateButton = formSection.querySelector('.generate-button');
+        const radioButtons = formSection.querySelectorAll(`input[name="subchapter-${chapterId}"]`);
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', () => {
+                newGenerateButton.disabled = false; // Aktifkan tombol jika sub-bab dipilih
+            });
+        });
+
+        newGenerateButton.addEventListener('click', () => {
+            const selectedSubChapter = formSection.querySelector(`input[name="subchapter-${chapterId}"]:checked`);
+            if (selectedSubChapter) {
+                generateSubChapter(chapterId, selectedSubChapter.value, newGenerateButton);
+            }
+        });
+    };
+
+    const switchView = (targetId) => { // Dimodifikasi sedikit
         document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
         const targetSection = document.getElementById(targetId);
-        if (targetSection) targetSection.classList.remove('hidden');
+        
+        if (targetSection) {
+            targetSection.classList.remove('hidden');
+
+            // Jika ini adalah form bab, render pilihan sub-babnya
+            const chapterId = targetId.replace('form-', '');
+            const subChapterContainer = targetSection.querySelector('.sub-chapter-container');
+            if (subChapterContainer) {
+                renderSubChapterOptions(chapterId, subChapterContainer);
+            }
+        }
 
         navLinks.forEach(link => {
             link.classList.remove('active');
@@ -46,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
             toggleMenu();
         }
-        // Sembunyikan hasil jika di halaman form-home
         const resultContainer = document.getElementById('result-container');
         if (targetId === 'form-home' && resultContainer) {
             resultContainer.classList.add('hidden');
@@ -55,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const updateUI = () => {
+    const updateUI = () => { // Dimodifikasi untuk append content
         const desktopPreview = document.getElementById('thesisContent');
         const resultContainer = document.getElementById('result-container');
         const placeholder = document.getElementById('draft-placeholder');
@@ -68,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
             if (appState.generated[bab]) {
                 const titleMap = { bab1: "BAB I: PENDAHULUAN", bab2: "BAB II: TINJAUAN PUSTAKA", bab3: "BAB III: METODE PENELITIAN", bab4: "BAB IV: PEMBAHASAN" };
-                fullText += `<h2>${titleMap[bab]}</h2><pre>${appState.generated[bab]}</pre>`;
+                fullText += `<h2>${titleMap[bab]}</h2><div class="prose-content">${appState.generated[bab].replace(/\n/g, '<br>')}</div>`;
                 
                 const resultCard = document.createElement('div');
                 resultCard.className = 'result-card';
@@ -91,8 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllBtn.classList.toggle('hidden', !hasContent);
     };
 
-    async function generateChapter(chapter, button) {
-        const originalButtonText = button.textContent;
+    // Fungsi generate DIMODIFIKASI TOTAL menjadi generateSubChapter
+    async function generateSubChapter(chapter, subChapterTitle, button) {
+        const buttonTextSpan = button.querySelector('.button-text');
+        const originalButtonText = buttonTextSpan.textContent;
         button.disabled = true;
         button.innerHTML = `<span class="loading-spinner"></span><span>Membangun...</span>`;
         
@@ -100,35 +176,33 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.problem = document.getElementById('mainRumusanMasalah').value;
         if (!appState.topic || !appState.problem) {
             alert('Harap isi Topik dan Rumusan Masalah utama terlebih dahulu.');
-            button.disabled = false; button.innerHTML = originalButtonText; switchView('form-home'); return;
+            button.disabled = false;
+            buttonTextSpan.textContent = originalButtonText;
+            switchView('form-home');
+            return;
         }
         
-        // =====================================================================
-        // INI ADALAH BAGIAN "INGATAN PELAYAN" YANG TELAH DIKEMBALIKAN
-        // =====================================================================
-        const payload = { topic: appState.topic, problem: appState.problem, chapter: chapter, details: {} };
-        
-        if (chapter === 'bab1') {
-            payload.details.latarBelakang = document.getElementById('formLatarBelakang').value;
-            payload.details.tujuanPenelitian = document.getElementById('formTujuanPenelitian').value;
-        } else if (chapter === 'bab2') {
-            payload.details.subtopics = document.getElementById('mainChapter2Subtopics').value;
-        } else if (chapter === 'bab3') {
-            payload.details.pendekatan = document.getElementById('formPendekatanPenelitian').value;
-            payload.details.jenis = document.getElementById('formJenisPenelitian').value;
-            payload.details.lokasi = document.getElementById('formLokasiPenelitian').value;
-            payload.details.metodePengumpulanData = document.getElementById('formMetodePengumpulanData').value;
-            payload.details.modelAnalisis = document.getElementById('formModelAnalisisData').value;
-        }
-        // =====================================================================
+        // PAYLOAD BARU: Lebih sederhana
+        const payload = { 
+            topic: appState.topic, 
+            problem: appState.problem, 
+            subChapterTitle: subChapterTitle 
+        };
 
         try {
-            const response = await fetch('/.netlify/functions/generate-thesis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const response = await fetch('/.netlify/functions/generate-thesis', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Request gagal');
             
             if (data.text) {
-                appState.generated[chapter] = data.text;
+                // MODIFIKASI STATE: Tambahkan hasil baru ke bab yang ada
+                const existingContent = appState.generated[chapter] || '';
+                appState.generated[chapter] = existingContent + data.text + '\n\n';
+                
                 updateUI();
                 document.querySelector(`.nav-link[data-target="form-${chapter}"]`).classList.add('completed');
             } else { 
@@ -138,11 +212,15 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Gagal: ' + error.message);
         } finally {
             button.disabled = false;
-            button.innerHTML = originalButtonText;
+            button.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 button-icon"><path fill-rule="evenodd" d="M10.868 2.884c.321.077.635.148.942.22a.75.75 0 01.706.853l-.612 3.06a.75.75 0 00.298.635l2.525 2.148a.75.75 0 01-.247 1.293l-3.374.692a.75.75 0 00-.573.433l-1.42 3.108a.75.75 0 01-1.33.001l-1.42-3.108a.75.75 0 00-.573-.433l-3.374-.692a.75.75 0 01-.247-1.293l2.525-2.148a.75.75 0 00.298-.635l-.612-3.06a.75.75 0 01.706-.853c.307-.072.62-.143.942-.22z" clip-rule="evenodd" /></svg>
+                <span class="button-text">${originalButtonText}</span>
+            `;
+            button.disabled = true; // Nonaktifkan lagi setelah selesai
         }
     }
 
-    // EVENT LISTENERS
+    // EVENT LISTENERS (Tidak banyak berubah)
     mobileMenuButton.addEventListener('click', toggleMenu);
     sidebarOverlay.addEventListener('click', toggleMenu);
     
@@ -151,10 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault(); 
             switchView(e.currentTarget.dataset.target); 
         }); 
-    });
-
-    generateButtons.forEach(button => {
-        button.addEventListener('click', () => generateChapter(button.dataset.chapter, button));
     });
     
     copyAllBtn.addEventListener('click', () => {
@@ -172,11 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('completed'));
             updateUI();
         }
-        window.addEventListener('load', () => {
-        if (loadingScreen) {
-            loadingScreen.classList.add('hidden');
-        }
-    });
     });
 
     // INISIALISASI
