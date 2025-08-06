@@ -5,11 +5,12 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const GROK_API_KEY = process.env.GROK_API_KEY;
-  if (!GROK_API_KEY) {
+  // 1. Ganti ke GEMINI_API_KEY
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'GROK_API_KEY tidak ditemukan di environment variables.' }),
+      body: JSON.stringify({ error: 'GEMINI_API_KEY tidak ditemukan di environment variables.' }),
     };
   }
 
@@ -25,7 +26,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // ==== RANGKAI PROMPT (TIDAK ADA PERUBAHAN) ====
+    // ==== RANGKAI PROMPT (TIDAK ADA PERUBAHAN DI BAGIAN INI) ====
     let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
 Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
 Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam beberapa paragraf yang kaya analisis.
@@ -35,7 +36,7 @@ Informasi dasar untuk draf ini adalah sebagai berikut:
 - Rumusan Masalah: "${problem}"\n\n`;
 
     switch (chapter) {
-      // ... (semua case switch Anda tetap sama, tidak perlu diubah)
+      // ... (semua case switch Anda tetap sama persis)
       case 'bab1':
         prompt += `Struktur BAB I - PENDAHULUAN:
 1.1 Latar belakang
@@ -97,32 +98,30 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
         throw new Error('Chapter tidak valid');
     }
     
+    // 2. KONSTRUKSI REQUEST KE GEMINI API
+    const systemInstruction = "Anda adalah asisten penulisan akademis ahli hukum. Tulis dengan gaya akademik hukum, setiap sub-bab minimal 5 paragraf penuh. Jangan merangkum. Jawaban harus panjang, rinci, dan fokus pada topik yang diberikan. Gunakan bahasa Indonesia yang formal dan terstruktur.";
+    const fullPrompt = `${systemInstruction}\n\n---\n\n${prompt}`;
+
     const requestBody = {
-      // PASTIKAN model ini tersedia untuk API Key Anda.
-      model: "grok-1.5", 
-      messages: [
-        {
-          role: "system",
-          content: "Anda adalah asisten penulisan akademis ahli hukum. Tulis dengan gaya akademik hukum, setiap sub-bab minimal 5 paragraf penuh. Jangan merangkum. Jawaban harus panjang, rinci, dan fokus pada topik yang diberikan. Gunakan bahasa Indonesia yang formal dan terstruktur."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 8000,
-      top_p: 0.9,
-      stop: [],
-      stream: false
+      contents: [{
+        parts: [{
+          text: fullPrompt
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.9,
+        maxOutputTokens: 8192, // Batas standar Gemini
+      }
     };
 
-    const apiURL = "https://api.x.ai/v1/chat/completions";
+    // 3. Ganti URL API ke endpoint Gemini
+    const model = 'gemini-1.5-flash-latest'; // Model yang cepat dan mampu menangani token besar
+    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
     
     const apiResponse = await fetch(apiURL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${GROK_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(requestBody)
@@ -130,20 +129,20 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
 
     const responseData = await apiResponse.json();
 
-    // ==== PENANGANAN ERROR API YANG ROBUST ====
+    // 4. Penanganan Error & Respons Spesifik Gemini
     if (responseData.error) {
-      // Mengubah seluruh objek error menjadi string agar detailnya tidak hilang
       const errorDetails = JSON.stringify(responseData.error);
-      console.error("🔥 Grok AI API Error Response:", errorDetails);
-      throw new Error(`Grok AI gagal: ${errorDetails}`);
+      console.error("🔥 Gemini API Error Response:", errorDetails);
+      throw new Error(`Gemini AI gagal: ${errorDetails}`);
     }
     
-    if (!responseData.choices || responseData.choices.length === 0) {
-      console.error("🔥 Respons tidak valid dari Grok AI (tidak ada 'choices'):", JSON.stringify(responseData));
-      throw new Error("Respons tidak valid atau kosong dari Grok AI.");
+    if (!responseData.candidates || responseData.candidates.length === 0) {
+      const blockReason = responseData.promptFeedback?.blockReason || 'Tidak ada kandidat yang dihasilkan (kemungkinan diblokir oleh filter keamanan)';
+      console.error("🔥 Respons diblokir atau kosong dari Gemini:", JSON.stringify(responseData));
+      throw new Error(`Gemini gagal: ${blockReason}`);
     }
 
-    const resultText = responseData.choices?.[0]?.message?.content;
+    const resultText = responseData.candidates[0].content.parts[0].text;
 
     return {
       statusCode: 200,
@@ -151,7 +150,6 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     };
 
   } catch (error) {
-    // ==== BLOK CATCH UNTUK SEMUA ERROR TAK TERDUGA ====
     console.error("🔥 Terjadi error fatal dalam handler:", error);
     return {
       statusCode: 500,
