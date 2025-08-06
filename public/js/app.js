@@ -203,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         wrapper.appendChild(resultDiv);
                     }
                     resultDiv.innerHTML = data.text.replace(/\n/g, '<br>');
+                    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
 
                 radioElement.disabled = true; // Nonaktifkan radio yang sudah selesai
