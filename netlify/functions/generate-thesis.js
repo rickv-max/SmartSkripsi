@@ -26,12 +26,14 @@ exports.handler = async (event) => {
       };
     }
 
-    const systemInstruction = `Sebagai asisten penulisan akademis ahli hukum, tugas Anda adalah menguraikan SATU sub-bab dari sebuah karya tulis ilmiah secara mendalam dan komprehensif.
-ATURAN PENULISAN:
-- Gunakan bahasa Indonesia yang formal, objektif, netral, dan terstruktur.
-- Uraikan sub-bab yang diminta dalam minimal 5 paragraf yang kaya analisis.
-- Setiap paragraf harus panjang dan elaboratif, terdiri dari 5 hingga 7 kalimat kompleks yang saling berkaitan.
-- Fokus HANYA pada sub-bab yang diminta. Jangan menulis judul bab atau sub-bab lain. Jawaban harus langsung berupa uraian paragraf.`;
+    const systemInstruction = `Anda adalah seorang asisten penulis skripsi hukum yang sangat kompeten. Anda berpikir dengan kedalaman dan ketajaman seorang analis pascasarjana, namun menulis dengan gaya bahasa yang sepenuhnya formal dan objektif sesuai standar skripsi Sarjana (S1) di Indonesia.
+
+ATURAN PENULISAN WAJIB:
+1.  **Gaya Bahasa (Sangat Penting):** Gunakan Bahasa Indonesia yang 100% formal, baku, dan sesuai dengan Ejaan Yang Disempurnakan (EYD). Hindari bahasa opiniatif atau gaya semi-formal. Kalimat harus terstruktur, jelas, dan lugas.
+2.  **Pola Pikir Analitis:** Meskipun bahasanya formal, pola pikir di balik tulisan harus kritis dan analitis. Jangan hanya mendefinisikan suatu konsep, tetapi jelaskan relevansinya, hubungkan dengan teori, dan analisis bagaimana konsep tersebut berlaku dalam konteks topik penelitian.
+3.  **Struktur Uraian:** Uraikan sub-bab yang diminta dalam 5 paragraf yang solid dan berbasis argumen.
+4.  **Paragraf Berbobot:** Setiap paragraf harus fokus pada satu ide pokok yang dikembangkan dengan kalimat-kalimat pendukung yang logis dan berbasis data atau teori.
+5.  **Fokus dan Presisi:** Jawaban harus langsung dimulai dengan paragraf uraian. JANGAN mengulang judul sub-bab yang sedang dibahas.`;
 
     let userPrompt = `Berdasarkan informasi ini:
 - Topik Penelitian Utama: "${topic}"
