@@ -35,11 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'BAB III: METODE PENELITIAN',
             isCustom: false,
             subChapters: [
-                { title: '3.1 Pendekatan Penelitian', input: { id: 'pendekatanInput', label: 'Pendekatan yang Digunakan (Contoh: Yuridis Empiris)' } },
+                { title: '3.1 Pendekatan Penelitian', input: { id: 'pendekatanInput', label: 'Pendekatan yang Digunakan (Contoh: Yuridis Empiris dengan kajian sosiologi hukum dan antropologi hukum)' } },
                 { title: '3.2 Jenis Penelitian', input: { id: 'jenisInput', label: 'Jenis Penelitian (Contoh: Deskriptif Analitis)' } },
                 { title: '3.3 Lokasi/Ruang Lingkup Penelitian', input: { id: 'lokasiInput', label: 'Lokasi/Ruang Lingkup (Contoh: Kecamatan Randuagung)' } },
-                { title: '3.4 Teknik Pengumpulan Data', input: { id: 'teknikInput', label: 'Teknik Pengumpulan Data (Contoh: Wawancara dan Studi Pustaka)' } },
-                { title: '3.5 Teknik Analisis Data', input: { id: 'analisisInput', label: 'Teknik Analisis Data (Contoh: Kualitatif Deskriptif)' } }
+                { title: '3.4 Metode Pengumpulan Data', input: { id: 'teknikInput', label: 'Metode Pengumpulan Data (Contoh: Wawancara dan Studi Pustaka)' } },
+                { title: '3.5 Model Analisis Data', input: { id: 'analisisInput', label: 'Model Analisis Data (Contoh: Kualitatif Deskriptif)' } }
             ]
         },
         'bab4': {
