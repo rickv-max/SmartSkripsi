@@ -9,7 +9,7 @@ exports.handler = async (event) => {
   if (!GEMINI_API_KEY) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'GEMINI_API_KEY tidak ditemukan di environment variables.' }),
+      body: JSON.stringify({ error: 'GEMINI_API_KEY tidak ditemukan.' }),
     };
   }
 
@@ -25,86 +25,66 @@ exports.handler = async (event) => {
       };
     }
 
-    // ==== RANGKAI PROMPT (TIDAK ADA PERUBAHAN) ====
-    let prompt = `Sebagai asisten penulisan akademis, tugas Anda adalah membantu menyusun draf untuk sebuah karya tulis ilmiah di bidang hukum.
-Hasil tulisan harus objektif, netral, dan fokus pada analisis teoretis. Gunakan bahasa Indonesia yang formal dan terstruktur.
-Tujuan utamanya adalah menghasilkan draf yang komprehensif dan mendalam, di mana setiap sub-bab diuraikan dalam beberapa paragraf yang kaya analisis.
+    // ==== INSTRUKSI UTAMA YANG TELAH DISESUAIKAN ====
+    const systemInstruction = `Sebagai asisten penulisan akademis ahli hukum, tugas Anda adalah menghasilkan draf karya tulis ilmiah yang komprehensif dan mendalam.
+ATURAN PENULISAN:
+- Gunakan bahasa Indonesia yang formal, objektif, netral, dan terstruktur.
+- Fokus pada analisis teoretis.
+- Setiap sub-bab yang diminta harus diuraikan dalam 2 hingga 3 paragraf yang sangat mendalam.
+- Setiap paragraf WAJIB sangat panjang dan komprehensif, terdiri dari 7 hingga 10 kalimat yang detail dan saling terhubung secara logis.
+- Jangan pernah merangkum atau memberikan jawaban singkat. Jawaban harus selalu panjang dan rinci.
+- Jika diminta membuat tabel, buatlah dalam format Markdown.`;
 
-Informasi dasar untuk draf ini adalah sebagai berikut:
+    // Prompt spesifik tugas (tidak perlu diubah)
+    let userPrompt = `Tuliskan draf untuk bagian di bawah ini.
 - Topik Penelitian: "${topic}"
 - Rumusan Masalah: "${problem}"\n\n`;
 
     switch (chapter) {
-      // ... (semua case switch Anda tetap sama persis)
       case 'bab1':
-        prompt += `Struktur BAB I - PENDAHULUAN:
+        userPrompt += `BAGIAN YANG HARUS DITULIS: BAB I - PENDAHULUAN
+Struktur yang harus diikuti:
 1.1 Latar belakang
 1.2 Rumusan masalah
 1.3 Tujuan penelitian
 1.4 Kontribusi penelitian
-1.5 Orisinalitas (buat dalam bentuk tabel)
-Pastikan setiap sub-bab memiliki minimal 5 paragraf yang mendalam dan relevan.
-Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
-Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
-Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
+1.5 Orisinalitas (dalam bentuk tabel)`;
         break;
 
       case 'bab2':
-        prompt += `Struktur BAB II - TINJAUAN PUSTAKA:
-2.1 Tinjauan umum tentang topik yang diangkat
-2.2 Teori-teori relevan yang menjadi landasan kajian
-2.3 Penelitian terdahulu yang relevan (minimal 3 referensi)
-Setiap sub-bab harus dijelaskan secara sistematis dan panjang (minimal 5 paragraf per sub-bab). Kaitkan dengan topik dan rumusan masalah "${problem}".
-Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
-Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
-Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
+        userPrompt += `BAGIAN YANG HARUS DITULIS: BAB II - TINJAUAN PUSTAKA
+Struktur yang harus diikuti:
+2.1 Tinjauan umum tentang topik
+2.2 Teori-teori relevan sebagai landasan
+2.3 Penelitian terdahulu yang relevan (minimal 3)`;
         break;
 
       case 'bab3':
-        prompt += `Struktur BAB III - METODE PENELITIAN:
-Berikan pengantar pentingnya metodologi dalam penelitian hukum, lalu uraikan secara sangat mendalam setiap sub-bab berikut. Masing-masing sub-bab wajib memiliki minimal 5 paragraf terstruktur dan fokus:
-
-3.1 Pendekatan Penelitian:
-- Uraikan pengertian pendekatan, jenis-jenis (yuridis normatif, empiris, socio-legal), dan berikan justifikasi logis berdasarkan topik "${topic}" serta masalah "${problem}". ${details.pendekatan ? `Gunakan pendekatan "${details.pendekatan}".` : ''}
-
-3.2 Jenis Penelitian:
-- Bahas jenis penelitian hukum seperti deskriptif, preskriptif, atau eksploratif. Berikan alasan akademik mengapa jenis tersebut tepat untuk digunakan. ${details.jenis ? `Prioritaskan jenis "${details.jenis}".` : ''}
-
-3.3 Lokasi atau Ruang Lingkup Penelitian:
-- Jelaskan secara rinci batasan atau lokasi penelitian. Jika kepustakaan, bahas lingkup sumber hukum yang dikaji (UU, yurisprudensi, literatur akademik). ${details.lokasi ? `Lokasi yang disarankan: "${details.lokasi}".` : ''}
-
-3.4 Teknik Pengumpulan Data:
-- Uraikan metode seperti studi pustaka, wawancara, observasi hukum, dan jelaskan secara teknis cara pelaksanaannya. ${details.metodePengumpulanData ? `Gunakan metode "${details.metodePengumpulanData}".` : ''}
-
-3.5 Teknik Analisis Data:
-- Bahas tahapan analisis hukum, mulai dari reduksi data, penyajian, hingga penarikan kesimpulan. Tautkan langsung dengan rumusan masalah "${problem}". ${details.modelAnalisis ? `Gunakan teknik "${details.modelAnalisis}".` : ''}
-Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
-Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
-Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
+        userPrompt += `BAGIAN YANG HARUS DITULIS: BAB III - METODE PENELITIAN
+Berikan pengantar singkat tentang pentingnya metodologi, lalu uraikan sub-bab berikut:
+3.1 Pendekatan Penelitian: ${details.pendekatan ? `Gunakan "${details.pendekatan}".` : ''} Jelaskan pengertian, jenis, dan justifikasi logisnya.
+3.2 Jenis Penelitian: ${details.jenis ? `Prioritaskan "${details.jenis}".` : ''} Bahas dan berikan alasan akademis.
+3..3 Lokasi/Ruang Lingkup Penelitian: ${details.lokasi ? `Fokus pada "${details.lokasi}".` : ''} Jelaskan batasannya.
+3.4 Teknik Pengumpulan Data: ${details.metodePengumpulanData ? `Gunakan "${details.metodePengumpulanData}".` : ''} Uraikan secara teknis.
+3.5 Teknik Analisis Data: ${details.modelAnalisis ? `Gunakan teknik "${details.modelAnalisis}".` : ''} Bahas tahapannya dan kaitkan dengan rumusan masalah.`;
         break;
 
       case 'bab4':
-        prompt += `Struktur BAB IV - HASIL PENELITIAN DAN PEMBAHASAN:
-- Buat struktur sistematis sesuai rumusan masalah.
-- Bahas hasil analisis dengan mengaitkan teori dan data.
-- Setiap bagian harus mengandung minimal 5 paragraf dengan argumen hukum yang mendalam dan kritis.
-- Berikan kesimpulan sementara di akhir tiap bagian.
-Setiap paragraf harus panjang, tidak boleh ringkas, dan berisi uraian analitis yang mendalam.
-Gunakan kalimat kompleks dan elaboratif, hindari pernyataan singkat atau satu kalimat saja dalam satu paragraf.
-Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan secara logis.`;
+        userPrompt += `BAGIAN YANG HARUS DITULIS: BAB IV - HASIL PENELITIAN DAN PEMBAHASAN
+Struktur:
+- Buat struktur pembahasan yang sistematis sesuai rumusan masalah.
+- Lakukan analisis mendalam dengan mengaitkan teori dan data.
+- Berikan argumen hukum yang kritis.`;
         break;
       default:
         throw new Error('Chapter tidak valid');
     }
     
-    const systemInstruction = "Anda adalah asisten penulisan akademis ahli hukum. Tulis dengan gaya akademik hukum, setiap sub-bab minimal 5 paragraf penuh. Jangan merangkum. Jawaban harus panjang, rinci, dan fokus pada topik yang diberikan. Gunakan bahasa Indonesia yang formal dan terstruktur.";
-    const fullPrompt = `${systemInstruction}\n\n---\n\n${prompt}`;
+    const fullPrompt = `${systemInstruction}\n\n---\n\nTUGAS SPESIFIK:\n${userPrompt}`;
 
     const requestBody = {
       contents: [{
-        parts: [{
-          text: fullPrompt
-        }]
+        parts: [{ text: fullPrompt }]
       }],
       generationConfig: {
         temperature: 0.7,
@@ -116,17 +96,11 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     const model = 'gemini-1.5-flash-latest';
     const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
     
-    // ==== LOGGING TAMBAHAN UNTUK DEBUGGING ====
-    console.log("🚀 Mengirim permintaan ke Gemini...");
-    // Kita tidak akan log URL lengkap karena mengandung API Key, cukup body-nya.
-    console.log("📦 Request Body:", JSON.stringify(requestBody, null, 2));
-    // ===========================================
+    console.log("🚀 Mengirim permintaan (2-3 paragraf panjang) ke Gemini...");
 
     const apiResponse = await fetch(apiURL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody)
     });
 
@@ -139,7 +113,7 @@ Paragraf harus terdiri dari minimal 5–7 kalimat lengkap yang saling berkaitan 
     }
     
     if (!responseData.candidates || responseData.candidates.length === 0) {
-      const blockReason = responseData.promptFeedback?.blockReason || 'Tidak ada kandidat yang dihasilkan (kemungkinan diblokir oleh filter keamanan)';
+      const blockReason = responseData.promptFeedback?.blockReason || 'Tidak ada kandidat (kemungkinan diblokir)';
       console.error("🔥 Respons diblokir atau kosong dari Gemini:", JSON.stringify(responseData));
       throw new Error(`Gemini gagal: ${blockReason}`);
     }
