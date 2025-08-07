@@ -3,26 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
     tsParticles.load("particles-js", {
         background: {
             color: {
-                value: 'transparent' // Membuat background canvas transparan
+                value: 'transparent'
             }
         },
-        fpsLimit: 60, // Batasi FPS untuk performa lebih baik
+        fpsLimit: 60,
         particles: {
             number: {
-                value: 120, // Jumlah partikel
+                value: 120,
                 density: {
                     enable: true,
                     value_area: 800
                 }
             },
             color: {
-                value: "#ffffff" // Warna partikel
+                value: "#ffffff"
             },
             shape: {
                 type: "circle"
             },
             opacity: {
-                value: { min: 0.1, max: 0.5 }, // Opacity acak untuk efek berkelip
+                value: { min: 0.1, max: 0.5 },
                 animation: {
                     enable: true,
                     speed: 1,
@@ -31,31 +31,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             size: {
-                value: { min: 1, max: 3 } // Ukuran partikel acak
+                value: { min: 1, max: 3 }
             },
             links: {
-                enable: false, // Kita tidak ingin ada garis antar partikel
+                enable: false,
             },
             move: {
                 enable: true,
-                speed: 0.5, // Kecepatan gerak partikel
+                speed: 0.5,
                 direction: "none",
                 random: true,
                 straight: false,
                 outModes: {
-                    default: "out" // Partikel keluar dari layar
+                    default: "out"
                 }
             }
         },
         interactivity: {
             detectsOn: "canvas",
             events: {
-                onHover: {
-                    enable: false, // Interaksi saat hover dimatikan
-                },
-                onClick: {
-                    enable: false, // Interaksi saat klik dimatikan
-                },
+                onHover: { enable: false },
+                onClick: { enable: false },
                 resize: true
             }
         },
@@ -63,14 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     // === AKHIR INISIALISASI ===
 
-
-    // STATE & CACHE (sisa kode Anda tetap sama)
+    // STATE & CACHE
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) setTimeout(() => loadingScreen.classList.add('hidden'), 3400);
 
     const appState = { topic: '', problem: '', generated: {}, currentView: 'form-home' };
     const navLinks = document.querySelectorAll('.nav-link');
-    // ... sisa kode JavaScript Anda persis sama seperti sebelumnya
     const sidebar = document.getElementById('sidebar');
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const menuOpenIcon = document.getElementById('menu-open-icon');
@@ -92,7 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 { title: '1.5 Orisinalitas', input: { id: 'orisinalitasInput', label: 'Sebutkan 3 judul penelitian terdahulu untuk dibuatkan tabel perbandingan (Opsional)' } }
             ]
         },
-        'bab2': { title: 'BAB II: TINJAUAN PUSTAKA', isCustom: true },
+        'bab2': {
+            title: 'BAB II: TINJAUAN PUSTAKA',
+            isCustom: true
+        },
         'bab3': {
             title: 'BAB III: METODE PENELITIAN',
             isCustom: false,
@@ -114,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // FUNGSI INTI
     const toggleMenu = () => {
         sidebar.classList.toggle('-translate-x-full');
         sidebar.classList.toggle('translate-x-0');
@@ -171,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.type === 'radio') {
                 newGenerateButton.disabled = false;
                 formSection.querySelectorAll('[id^="detail-for-"]').forEach(div => div.classList.add('hidden'));
+                
                 const subConfig = subChaptersSource.find(s => (typeof s === 'string' ? s : s.title) === e.target.value);
                 if (subConfig && typeof subConfig === 'object' && subConfig.input) {
                     const detailDiv = formSection.querySelector(`#detail-for-${e.target.id}`);
@@ -192,20 +191,160 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    
-    // Sisa kode di bawah ini tidak berubah...
-    const switchView = (targetId) => { /* ... */ };
-    const updateDesktopPreview = () => { /* ... */ };
-    async function generateSubChapter(radioElement, detail, button) { /* ... */ };
-    // Event listeners
+
+    const switchView = (targetId) => {
+        document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+            targetSection.classList.remove('hidden');
+            const chapterId = targetId.replace('form-', '');
+            
+            if (chaptersData[chapterId] && !chaptersData[chapterId].isCustom) {
+                const subChapterContainer = targetSection.querySelector('.sub-chapter-container');
+                if (subChapterContainer) renderSubChapterOptions(chapterId, subChapterContainer);
+            }
+        }
+        navLinks.forEach(link => link.classList.toggle('active', link.dataset.target === targetId));
+        appState.currentView = targetId;
+        const homepageCTA = document.getElementById('homepage-cta');
+        if (homepageCTA) homepageCTA.classList.toggle('hidden', targetId !== 'form-home');
+        if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) toggleMenu();
+    };
+
+    const updateDesktopPreview = () => {
+        let fullText = '';
+        let hasContent = false;
+        ['bab1', 'bab2', 'bab3', 'bab4'].forEach(bab => {
+            if (appState.generated[bab]) {
+                const chapterTitle = chaptersData[bab]?.title || `BAB ${bab.slice(-1)}`;
+                fullText += `<h2>${chapterTitle}</h2><div class="prose-content">${appState.generated[bab].replace(/\n/g, '<br>')}</div>`;
+                hasContent = true;
+            }
+        });
+        desktopPreview.innerHTML = hasContent ? fullText : `<p class="text-muted">Pratinjau keseluruhan akan muncul di sini.</p>`;
+        copyAllBtn.classList.toggle('hidden', !hasContent);
+        clearAllBtn.classList.toggle('hidden', !hasContent);
+    };
+
+    async function generateSubChapter(radioElement, detail, button) {
+        const buttonTextSpan = button.querySelector('.button-text');
+        const originalButtonText = "Bangun Draf Sub-Bab";
+        button.disabled = true;
+        button.innerHTML = `<span class="loading-spinner"></span><span>Membangun...</span>`;
+        
+        appState.topic = document.getElementById('mainThesisTopic').value;
+        appState.problem = document.getElementById('mainRumusanMasalah').value;
+        if (!appState.topic || !appState.problem) {
+            alert('Harap isi Topik dan Rumusan Masalah utama terlebih dahulu.');
+            button.disabled = false;
+            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 button-icon"><path d="M10.868 2.884c.321.077.635.148.942.22a.75.75 0 01.706.853l-.612 3.06a.75.75 0 00.298.635l2.525 2.148a.75.75 0 01-.247 1.293l-3.374.692a.75.75 0 00-.573.433l-1.42 3.108a.75.75 0 01-1.33.001l-1.42-3.108a.75.75 0 00-.573-.433l-3.374-.692a.75.75 0 01-.247-1.293l2.525-2.148a.75.75 0 00.298-.635l-.612-3.06a.75.75 0 01.706-.853c.307-.072.62-.143.942-.22z"/></svg><span class="button-text">${originalButtonText}</span>`;
+            switchView('form-home');
+            return;
+        }
+        
+        const payload = { 
+            topic: appState.topic, 
+            problem: appState.problem, 
+            subChapterTitle: radioElement.value,
+            detail: detail
+        };
+
+        try {
+            const response = await fetch('/.netlify/functions/generate-thesis', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Request gagal');
+            
+            if (data.text) {
+                const chapterId = button.dataset.chapter;
+                const existingContent = appState.generated[chapterId] || '';
+                appState.generated[chapterId] = existingContent + data.text + '\n\n';
+                updateDesktopPreview();
+                
+                const wrapper = radioElement.closest('.sub-chapter-option-wrapper');
+                if (wrapper) {
+                    let resultDiv = wrapper.querySelector('.generated-result');
+                    if (!resultDiv) {
+                        resultDiv = document.createElement('div');
+                        resultDiv.className = 'generated-result mt-4 p-4 bg-gray-800 border border-border rounded-lg prose-sm';
+                        wrapper.appendChild(resultDiv);
+                    }
+                    resultDiv.innerHTML = data.text.replace(/\n/g, '<br>');
+                    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                radioElement.disabled = true;
+                document.querySelector(`.nav-link[data-target="form-${chapterId}"]`).classList.add('completed');
+            } else { 
+                throw new Error("Respons dari server tidak berisi teks."); 
+            }
+        } catch (error) {
+            alert('Gagal: ' + error.message);
+        } finally {
+            button.disabled = false;
+            button.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 button-icon"><path d="M10.868 2.884c.321.077.635.148.942.22a.75.75 0 01.706.853l-.612 3.06a.75.75 0 00.298.635l2.525 2.148a.75.75 0 01-.247 1.293l-3.374.692a.75.75 0 00-.573.433l-1.42 3.108a.75.75 0 01-1.33.001l-1.42-3.108a.75.75 0 00-.573-.433l-3.374-.692a.75.75 0 01-.247-1.293l2.525-2.148a.75.75 0 00.298-.635l-.612-3.06a.75.75 0 01.706-.853c.307-.072.62-.143.942-.22z"/></svg>
+                <span class="button-text">${originalButtonText}</span>
+            `;
+            button.disabled = true; 
+        }
+    }
+
+    // EVENT LISTENERS
     mobileMenuButton.addEventListener('click', toggleMenu);
     sidebarOverlay.addEventListener('click', toggleMenu);
-    navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchView(e.currentTarget.dataset.target); }); });
-    copyAllBtn.addEventListener('click', () => { /* ... */ });
-    clearAllBtn.addEventListener('click', () => { /* ... */ });
+    
+    navLinks.forEach(link => { 
+        link.addEventListener('click', (e) => { 
+            e.preventDefault(); 
+            switchView(e.currentTarget.dataset.target); 
+        }); 
+    });
+    
+    copyAllBtn.addEventListener('click', () => {
+        const textToCopy = desktopPreview.innerText;
+        navigator.clipboard.writeText(textToCopy).then(() => alert('Seluruh draf berhasil disalin!'))
+            .catch(() => alert('Gagal menyalin.'));
+    });
+
+    clearAllBtn.addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin menghapus semua hasil?')) {
+            appState.generated = {};
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('completed'));
+            document.querySelectorAll('.generated-result').forEach(el => el.remove());
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.disabled = false;
+                radio.checked = false;
+            });
+            const bab2Container = document.querySelector('#form-bab2 .sub-chapter-container');
+            if (bab2Container) {
+                 bab2Container.innerHTML = `<p class="text-muted">Daftar pilihan sub-bab akan muncul di sini setelah Anda mengklik "Muat Sub-Bab".</p>`;
+            }
+            updateDesktopPreview();
+        }
+    });
+
     const loadBab2Button = document.getElementById('load-bab2-button');
-    if (loadBab2Button) { loadBab2Button.addEventListener('click', () => { /* ... */ }); }
-    // INSIALISASI
+    if (loadBab2Button) {
+        loadBab2Button.addEventListener('click', () => {
+            const textarea = document.getElementById('bab2-custom-subchapters');
+            const subChapterContainer = document.querySelector('#form-bab2 .sub-chapter-container');
+            
+            const customSubChapters = textarea.value.split('\n').filter(line => line.trim() !== '');
+            
+            if (customSubChapters.length > 0) {
+                renderSubChapterOptions('bab2', subChapterContainer, customSubChapters);
+            } else {
+                subChapterContainer.innerHTML = `<p class="text-muted">Harap masukkan setidaknya satu judul sub-bab di kotak di atas.</p>`;
+            }
+        });
+    }
+
+    // INISIALISASI
     switchView('form-home');
     updateDesktopPreview();
 });
+Setelah mengganti file `js/app.js` dengan kode di atas, simpan, dan muat ulang halaman web Anda. Semua menu dan navigasi seharusnya sekarang berfungsi kembali seperti semula, dengan animasi partikel yang tetap berjalan di background.
