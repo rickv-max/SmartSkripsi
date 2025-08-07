@@ -84,11 +84,24 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .prose h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
 .prose pre { white-space: pre-wrap; word-wrap: break-word; background-color: transparent; padding: 0; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--text-muted); }
-.result-card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; margin-top: 1.5rem; padding: 1.5rem; animation: fadeIn 0.5s ease-in-out; }
+
+/* Inilah satu-satunya bagian yang dimodifikasi. Tampilan kartu hasil tetap sama. */
+.result-card { 
+    background-color: var(--bg-card); 
+    border: 1px solid var(--border-color); 
+    border-radius: 0.75rem; 
+    margin-top: 1.5rem; 
+    padding: 1.5rem; 
+    animation: fadeIn 0.5s ease-in-out; 
+}
 .result-card h3 { font-size: 1.125rem; font-weight: 600; color: var(--accent-blue); }
 .result-card pre { margin-top: 1rem; white-space: pre-wrap; word-wrap: break-word; color: var(--text-muted); }
-#result-container:empty { border: 2px dashed var(--border-color); border-radius: 0.75rem; padding: 3rem; text-align: center; color: var(--text-muted); transition: all 0.3s ease; margin-top: 2rem; }
-#result-container:empty::before { content: "Hasil draf Anda akan muncul di sini..."; }
+
+/* KODE PLACEHOLDER DI BAWAH INI TELAH DIHAPUS */
+/* 
+#result-container:empty { ... }
+#result-container:empty::before { ... }
+*/
 
 .paraphrase-reminder { display: flex; align-items: flex-start; gap: 1rem; background-color: var(--bg-card); border: 1px solid var(--border-color); border-left: 4px solid var(--accent-blue); border-radius: 0.75rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; animation: fadeIn 0.8s ease-out; }
 .paraphrase-reminder svg { flex-shrink: 0; width: 1.5rem; height: 1.5rem; color: var(--accent-blue); margin-top: 0.125rem; }
