@@ -17,12 +17,22 @@
 /* ===== GLOBAL STYLES & ANIMATIONS ===== */
 body.dark-mode {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-dark);
     color: var(--text-light);
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0);
-    background-size: 30px 30px;
+    
+    /* === PERUBAHAN UNTUK ANIMASI BACKGROUND DIMULAI DI SINI === */
+    background: 
+        /* Pola titik-titik (tetap di atas) */
+        radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0),
+        /* Gradien animasi (di belakang) */
+        linear-gradient(225deg, #111827, #1a2a45, #2c1f3a, var(--bg-dark));
+    background-size: 30px 30px, 400% 400%; /* Ukuran untuk titik dan gradien */
+    
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* Terapkan animasi */
+    animation: animate-background 20s ease infinite;
+    /* === PERUBAHAN SELESAI === */
 }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -414,22 +424,3 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 .loading-text {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    animation-delay: 0.6s;
-}
-
-.loading-creator {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    animation-delay: 0.8s;
-}
-.loading-creator strong {
-    color: var(--text-light);
-    font-weight: 500;
-}
