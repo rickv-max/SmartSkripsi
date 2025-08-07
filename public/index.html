@@ -39,6 +39,13 @@
                 <a href="#bab2" data-target="form-bab2" class="nav-link"><span>BAB II: Tinjauan Pustaka</span></a>
                 <a href="#bab3" data-target="form-bab3" class="nav-link"><span>BAB III: Metode Penelitian</span></a>
                 <a href="#bab4" data-target="form-bab4" class="nav-link"><span>BAB IV: Pembahasan</span></a>
+                <!-- ### PERUBAHAN NAMA MENU ### -->
+                <div class="pt-4 mt-4 border-t border-border">
+                    <a href="#" id="tutorialBtn" class="nav-link">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 8a6 6 0 11-12 0 6 6 0 0112 0zM7 8a1 1 0 100-2 1 1 0 000 2zM9.5 9.5a1 1 0 11-2 0 1 1 0 012 0zM11 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /><path d="M4.885 9.213A6.002 6.002 0 0110 5.5c1.82 0 3.49.832 4.568 2.147a.75.75 0 11-1.136.966A4.502 4.502 0 0010 7a4.502 4.502 0 00-3.432 1.327.75.75 0 01-1.136-.966z" /></svg>
+                         <span>Panduan Lolos dari AI</span>
+                    </a>
+                </div>
             </nav>
             <div class="mt-auto pt-6 border-t border-border">
                 <button id="copyAllBtn" class="w-full btn-secondary mb-2 hidden">Salin Seluruh Draf</button>
@@ -81,12 +88,9 @@
                 </div>
             </div>
             
-            <!-- ### BAGIAN PENTING YANG DIKEMBALIKAN ### -->
             <div id="form-bab1" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab I: Pendahuluan</h2>
-                <div class="sub-chapter-container">
-                    <!-- Daftar sub-bab Bab I akan muncul di sini -->
-                </div>
+                <div class="sub-chapter-container"></div>
             </div>
             
             <div id="form-bab2" class="form-section hidden">
@@ -107,16 +111,12 @@
 
             <div id="form-bab3" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab III: Metode Penelitian</h2>
-                <div class="sub-chapter-container">
-                    <!-- Daftar sub-bab Bab III akan muncul di sini -->
-                </div>
+                <div class="sub-chapter-container"></div>
             </div>
 
             <div id="form-bab4" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab IV: Pembahasan</h2>
-                <div class="sub-chapter-container">
-                    <!-- Daftar sub-bab Bab IV akan muncul di sini -->
-                </div>
+                <div class="sub-chapter-container"></div>
             </div>
             
             <div id="result-container" class="mt-8"></div>
@@ -134,6 +134,56 @@
             <h2 class="text-xl font-bold">Pratinjau Keseluruhan</h2>
             <div id="thesisContent" class="prose mt-6"></div>
         </aside>
+    </div>
+    
+    <div id="tutorialModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden">
+        <div class="tutorial-modal-content bg-card rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <header class="p-5 border-b border-border flex justify-between items-center flex-shrink-0">
+                <!-- ### PERUBAHAN NAMA MODAL ### -->
+                <h2 class="text-xl font-bold text-light">Panduan Lolos Deteksi AI</h2>
+                <button id="closeTutorialBtn" class="text-muted hover:text-light transition-colors">&times;</button>
+            </header>
+            <main class="p-6 text-light overflow-y-auto">
+                <p class="mb-6 text-muted">Gunakan draf dari SmartSkripsi sebagai fondasi, bukan hasil akhir. Ikuti 5 langkah ini untuk mengubah draf menjadi karya orisinal yang berlandaskan bukti akademik yang kuat.</p>
+                <div class="space-y-6">
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h3 class="step-title">Generate Draf Awal</h3>
+                            <p class="step-desc">Gunakan SmartSkripsi untuk membuat draf awal sebuah sub-bab. Fokuslah untuk mendapatkan struktur tulisan dan alur argumen. <strong>Penting:</strong> Abaikan semua referensi atau footnote yang mungkin diberikan; anggap itu hanya "dekorasi" yang belum valid.</p>
+                        </div>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h3 class="step-title">Identifikasi Klaim Utama (Kata Kunci)</h3>
+                            <p class="step-desc">Baca draf dan identifikasi pernyataan inti di setiap paragraf. Jika paragraf membahas "perlindungan data sebagai hak asasi", maka kata kunci Anda adalah <strong>"perlindungan data hak asasi manusia"</strong> atau <strong>"data privacy human right"</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h3 class="step-title">Berburu Bukti di Google Scholar</h3>
+                            <p class="step-desc">Buka <a href="https://scholar.google.com" target="_blank" rel="noopener noreferrer" class="link-scholar">scholar.google.com</a> dan masukkan kata kunci yang sudah diidentifikasi. Tujuannya adalah menemukan sumber kredibel seperti jurnal ilmiah, buku, atau putusan pengadilan.</p>
+                        </div>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h3 class="step-title">Verifikasi dan Temukan Kutipan Asli</h3>
+                            <p class="step-desc">Buka file PDF dari sumber yang Anda temukan. Gunakan fitur pencarian (Ctrl+F) untuk menemukan bagian yang membahas klaim Anda. Baca beberapa kalimat di sekitarnya untuk memahami konteks sebelum mengutip.</p>
+                        </div>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="step-number">5</div>
+                        <div>
+                            <h3 class="step-title">Rekonstruksi Paragraf dengan Sitasi</h3>
+                            <p class="step-desc">Tulis ulang paragraf di dokumen Anda. Kali ini, sisipkan kutipan atau parafrase dari sumber asli yang baru Anda temukan. Buatlah footnote yang benar dan lengkap sesuai gaya sitasi kampus Anda (misal: Chicago, APA).</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
