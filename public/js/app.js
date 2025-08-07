@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderSubChapterOptions = (chapterId, container, customSubChapters = null) => {
-        container.innerHTML = '';
+        container.innerHTML = ''; // Selalu bersihkan sebelum render
         const chapterConfig = chaptersData[chapterId];
         if (!chapterConfig) return;
 
@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // ### INI FUNGSI YANG DIPERBAIKI ###
     const switchView = (targetId) => {
         document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
         const targetSection = document.getElementById(targetId);
@@ -147,8 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (chaptersData[chapterId] && !chaptersData[chapterId].isCustom) {
                 const subChapterContainer = targetSection.querySelector('.sub-chapter-container');
-                if (subChapterContainer && subChapterContainer.innerHTML.trim() === '') {
-                    renderSubChapterOptions(chapterId, subChapterContainer);
+                // Kondisi yang salah dihapus. Sekarang akan selalu render.
+                if (subChapterContainer) {
+                     renderSubChapterOptions(chapterId, subChapterContainer);
                 }
             }
         }
@@ -176,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllBtn.classList.toggle('hidden', !hasContent);
     };
 
-    // INI ADALAH FUNGSI INTI YANG SEBELUMNYA KOSONG. SEKARANG SUDAH DIKEMBALIKAN.
     async function generateSubChapter(radioElement, detail, button) {
         const buttonTextSpan = button.querySelector('.button-text');
         const originalButtonText = "Bangun Draf Sub-Bab";
