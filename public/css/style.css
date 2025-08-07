@@ -43,6 +43,7 @@ body.dark-mode {
         position: fixed;
     }
 }
+
 /* ===== NAVIGATION (Sidebar) ===== */
 .nav-link {
     display: flex;
@@ -57,8 +58,46 @@ body.dark-mode {
 .nav-link.active { background-color: var(--accent-blue); color: var(--bg-dark); font-weight: 600; }
 .nav-link.completed::after { content: '✔'; margin-left: auto; color: #4ADE80; }
 
+/* ========== GAYA BARU UNTUK BERANDA MODERN ========== */
+.hero-section {
+    animation: fadeIn 1s ease-out;
+}
+.hero-title {
+    font-size: 2.5rem; /* 40px */
+    font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem; /* 12px */
+}
+.hero-subtitle {
+    font-size: 1.125rem; /* 18px */
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2.5rem; /* 40px */
+}
+.form-container-main {
+    max-width: 550px;
+    margin-bottom: 1.5rem; /* 24px */
+}
+.form-container-main .form-input {
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+}
+.form-container-main textarea.form-input {
+    min-height: 100px;
+}
+.cta-guidance {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+/* ================================================= */
+
+
 /* ===== FORM STYLES ===== */
-.form-section h2 { /* Ini untuk judul seperti "Fondasi Skripsi", "Bab I", dll. */
+.form-section h2 { /* Ini untuk judul seperti "Bab I", "Bab II", dll. */
     font-size: 1.875rem; /* text-3xl */
     font-weight: 700;
     margin-bottom: 1.5rem; /* mb-6 */
@@ -200,7 +239,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 /* ===== RESPONSIVE DESIGN (Media Queries untuk Ponsel) ===== */
 /* ========================================================= */
 @media (max-width: 640px) {
-    /* Mengecilkan judul utama di setiap halaman */
+    /* Gaya Responsive Beranda Modern */
+    .hero-title { font-size: 1.875rem; } /* text-3xl */
+    .hero-subtitle { font-size: 1rem; } /* text-base */
+
+    /* Mengecilkan judul utama di setiap halaman bab */
     .form-section h2 {
         font-size: 1.5rem; /* Dari 3xl menjadi 2xl */
         margin-bottom: 1rem;
@@ -250,53 +293,53 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
     }
 }
 .paraphrase-reminder {
-display: flex;
-align-items: flex-start;
-gap: 1rem; /* Jarak antara ikon dan teks /
-background-color: var(--bg-card);
-border: 1px solid var(--border-color);
-border-left: 4px solid var(--accent-blue); / Aksen di kiri /
-border-radius: 0.75rem;
-padding: 1.5rem;
-margin-top: 2rem; / Jarak dari form di atasnya */
-margin-bottom: 2rem;
-animation: fadeIn 0.8s ease-out;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease-out;
 }
 
 .paraphrase-reminder svg {
-flex-shrink: 0;
-width: 1.5rem;
-height: 1.5rem;
-color: var(--accent-blue);
-margin-top: 0.125rem;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--accent-blue);
+    margin-top: 0.125rem;
 }
 
 .paraphrase-reminder p {
-font-size: 0.875rem;
-color: var(--text-muted);
-line-height: 1.6;
-margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
 }
 
 .paraphrase-reminder p strong {
-color: var(--text-light);
-display: block;
-margin-bottom: 0.25rem;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 0.25rem;
 }
 
 .paraphrase-reminder a {
-display: inline-block; /* Agar bisa diberi margin-top */
-margin-top: 0.75rem;
-color: var(--accent-blue);
-font-weight: 600;
-text-decoration: none;
-transition: all 0.2s ease;
-font-size: 0.875rem;
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
 }
 
 .paraphrase-reminder a:hover {
-color: var(--accent-blue-hover);
-transform: translateX(2px); /* Efek hover kecil */
+    color: var(--accent-blue-hover);
+    transform: translateX(2px);
 }
 /* ========================================================= */
 /* ===== GAYA UNTUK LOADING SCREEN MODERN (VERSI BERSIH) ===== */
@@ -306,7 +349,6 @@ transform: translateX(2px); /* Efek hover kecil */
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Kontainer utama yang menutupi seluruh layar */
 .loading-screen {
     position: fixed;
     top: 0;
@@ -316,26 +358,22 @@ transform: translateX(2px); /* Efek hover kecil */
     background-color: var(--bg-dark);
     z-index: 9999;
     transition: opacity 0.8s ease-out 0.5s, visibility 0.8s ease-out 0.5s;
-    /* PENTING: display: flex telah dihapus untuk menghindari konflik */
 }
 
-/* Kelas untuk menyembunyikan loading screen */
 .loading-screen.hidden {
     opacity: 0;
     visibility: hidden;
 }
 
-/* Konten di tengah loading screen (Metode Penempatan Baru) */
 .loading-content {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Trik centering paling andal */
+    transform: translate(-50%, -50%);
     text-align: center;
-    width: 100%; /* Pastikan tidak menyusut */
+    width: 100%;
 }
 
-/* Animasi Staggered (muncul satu per satu) untuk setiap elemen */
 .loading-logo, .loading-spinner-main, .loading-text, .loading-creator {
     opacity: 0;
     animation: fadeInUp 0.8s ease-out forwards;
@@ -348,26 +386,21 @@ transform: translateX(2px); /* Efek hover kecil */
     animation-delay: 0.2s;
 }
 
-/* Definisikan keyframes untuk animasi pengisian */
 @keyframes loading-fill {
     100% {inset: 0}
 }
 
 .loader {
-  width: 150px; /* Sedikit lebih lebar agar terlihat bagus */
-  height: 20px; /* Sedikit lebih ramping */
+  width: 150px;
+  height: 20px;
   border-radius: 20px;
-  color: var(--accent-blue); /* Menggunakan warna aksen kita */
+  color: var(--accent-blue);
   border: 2px solid;
   position: relative;
-  
-  /* Menempatkannya di antara logo dan teks */
   margin: 1.5rem auto;
-
-  /* Menerapkan animasi staggered seperti elemen lainnya */
   opacity: 0;
   animation: fadeInUp 0.8s ease-out forwards;
-  animation-delay: 0.4s; /* Muncul kedua */
+  animation-delay: 0.4s;
 }
 
 .loader::before {
@@ -376,8 +409,8 @@ transform: translateX(2px); /* Efek hover kecil */
   margin: 2px;
   inset: 0 100% 0 0;
   border-radius: inherit;
-  background: currentColor; /* Menggunakan warna dari parent (.loader) */
-  animation: loading-fill 3s forwards cubic-bezier(0.4, 0.2, 0.2, 1); /* Animasi pengisian, 2 detik, dengan easing yang lebih halus */
+  background: currentColor;
+  animation: loading-fill 3s forwards cubic-bezier(0.4, 0.2, 0.2, 1);
 }
 
 .loading-text {
@@ -387,9 +420,8 @@ transform: translateX(2px); /* Efek hover kecil */
     animation-delay: 0.6s;
 }
 
-/* Nama Anda (Metode Penempatan Baru) */
 .loading-creator {
-    position: absolute; /* Sekarang relatif terhadap .loading-screen */
+    position: absolute;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
