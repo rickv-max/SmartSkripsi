@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================
     // BAGIAN 1: LOGIKA APLIKASI UTAMA (KRUSIAL)
     // ==========================================================
-
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
         setTimeout(() => {
@@ -20,6 +19,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyAllBtn = document.getElementById('copyAllBtn');
     const clearAllBtn = document.getElementById('clearAllBtn');
     const desktopPreview = document.getElementById('thesisContent');
+
+    const tutorialBtn = document.getElementById('tutorialBtn');
+    const tutorialModal = document.getElementById('tutorialModal');
+    const closeTutorialBtn = document.getElementById('closeTutorialBtn');
+
+    if (tutorialBtn && tutorialModal && closeTutorialBtn) {
+        const openModal = () => tutorialModal.classList.remove('hidden');
+        const closeModal = () => tutorialModal.classList.add('hidden');
+
+        tutorialBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal();
+            if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
+                toggleMenu();
+            }
+        });
+
+        closeTutorialBtn.addEventListener('click', closeModal);
+        tutorialModal.addEventListener('click', (e) => {
+            if (e.target === tutorialModal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !tutorialModal.classList.contains('hidden')) closeModal();
+        });
+    }
 
     const chaptersData = {
         'bab1': {
@@ -67,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderSubChapterOptions = (chapterId, container, customSubChapters = null) => {
-        container.innerHTML = ''; // Selalu bersihkan sebelum render
+        container.innerHTML = '';
         const chapterConfig = chaptersData[chapterId];
         if (!chapterConfig) return;
 
@@ -115,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.type === 'radio') {
                 newGenerateButton.disabled = false;
                 formSection.querySelectorAll('[id^="detail-for-"]').forEach(div => div.classList.add('hidden'));
-                
                 const subConfig = subChaptersSource.find(s => (typeof s === 'string' ? s : s.title) === e.target.value);
                 if (subConfig && typeof subConfig === 'object' && subConfig.input) {
                     const detailDiv = formSection.querySelector(`#detail-for-${e.target.id}`);
@@ -138,19 +161,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // ### INI FUNGSI YANG DIPERBAIKI ###
     const switchView = (targetId) => {
         document.querySelectorAll('.form-section').forEach(section => section.classList.add('hidden'));
         const targetSection = document.getElementById(targetId);
         if (targetSection) {
             targetSection.classList.remove('hidden');
             const chapterId = targetId.replace('form-', '');
-            
             if (chaptersData[chapterId] && !chaptersData[chapterId].isCustom) {
                 const subChapterContainer = targetSection.querySelector('.sub-chapter-container');
-                // Kondisi yang salah dihapus. Sekarang akan selalu render.
                 if (subChapterContainer) {
-                     renderSubChapterOptions(chapterId, subChapterContainer);
+                    renderSubChapterOptions(chapterId, subChapterContainer);
                 }
             }
         }
@@ -245,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // EVENT LISTENERS
     mobileMenuButton.addEventListener('click', toggleMenu);
     sidebarOverlay.addEventListener('click', toggleMenu);
     
@@ -295,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // INISIALISASI TAMPILAN
     switchView('form-home');
     updateDesktopPreview();
 
