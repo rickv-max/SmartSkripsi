@@ -48,33 +48,44 @@
 
         <!-- Konten Utama -->
         <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
+            <!-- ========== PERUBAHAN TAMPILAN BERANDA DIMULAI DI SINI ========== -->
             <div id="form-home" class="form-section">
-                <h2 class="text-3xl font-bold mb-2">Fondasi Skripsi</h2>
-                <div id="paraphrase-reminder-main" class="paraphrase-reminder mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>
-                    <div>
-                        <p><strong>Saran Profesional:</strong> Draf yang dihasilkan Tools ini adalah titik awal yang baik. Untuk menjaga orisinalitas dan integritas akademik, sangat disarankan untuk melakukan parafrase pada hasilnya.</p>
-                        <a href="https://parafraserm.netlify.app" target="_blank" rel="noopener noreferrer">Klik untuk mem-Parafrase hasilnya →</a>
+                <!-- Hero Section Modern -->
+                <div class="hero-section text-center">
+                    <h1 class="hero-title">Mulai Kerangka Skripsi Anda</h1>
+                    <p class="hero-subtitle">Cukup masukkan topik utama dan rumusan masalah, lalu biarkan AI membantu menyusun draf awal untuk setiap bab.</p>
+                    
+                    <div class="form-container-main mx-auto">
+                        <div class="space-y-5">
+                            <div>
+                                <label for="mainThesisTopic" class="form-label sr-only">Judul Skripsi Hukum</label>
+                                <input type="text" id="mainThesisTopic" placeholder="Ketik Judul Skripsi Hukum Anda di sini..." class="form-input text-center">
+                            </div>
+                            <div>
+                                <label for="mainRumusanMasalah" class="form-label sr-only">Rumusan Masalah Anda</label>
+                                <textarea id="mainRumusanMasalah" rows="3" placeholder="Jelaskan rumusan masalah Anda..." class="form-input text-center"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="cta-guidance">Setelah mengisi, buka menu ☰ di pojok kiri atas untuk memilih bab.</p>
+
+                    <div id="paraphrase-reminder-main" class="paraphrase-reminder mt-8 mb-6 text-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>
+                        <div>
+                            <p><strong>Tips Akademik:</strong> Draf dari AI adalah titik awal. Selalu lakukan parafrase dan kembangkan lebih lanjut untuk menjaga orisinalitas.</p>
+                            <a href="https://parafraserm.netlify.app" target="_blank" rel="noopener noreferrer">Butuh Bantuan Parafrase? Klik di sini →</a>
+                        </div>
                     </div>
                 </div>
-                <p class="text-white mb-6">Setelah mengisi Judul Skripsi & Rumusan Masalah, lanjut ke Garis ☰ pojok kiri atas lalu pilih bab.</p>
-                <div class="space-y-4">
-                    <div>
-                        <label for="mainThesisTopic" class="form-label">Judul Skripsi Hukum</label>
-                        <input type="text" id="mainThesisTopic" placeholder="Contoh: Perlindungan Data Pribadi di Era Digital" class="form-input">
-                    </div>
-                    <div>
-                        <label for="mainRumusanMasalah" class="form-label">Rumusan Masalah Anda</label>
-                        <textarea id="mainRumusanMasalah" rows="3" placeholder="Contoh: Bagaimana urgensi pembentukan undang-undang..." class="form-input"></textarea>
-                    </div>
-                </div>
+
                 <div id="homepage-cta" class="hidden mt-6 text-center">
                     <p class="text-sm text-gray-400 mb-2">Website alternatif jika website ini error:</p>
                     <a href="https://skripsiotomoatis.netlify.app" class="inline-block bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded transition duration-200">SmartSkripsi Versi 2</a>
                 </div>
             </div>
+            <!-- ========== PERUBAHAN TAMPILAN BERANDA SELESAI ========== -->
             
-            <!-- PERUBAHAN DIMULAI DI SINI: Konten form bab sekarang lebih sederhana -->
             <div id="form-bab1" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab I: Pendahuluan</h2>
                 <div class="sub-chapter-container">
@@ -99,6 +110,7 @@
                     <p class="text-muted">Daftar pilihan sub-bab akan muncul di sini setelah Anda mengklik "Muat Sub-Bab".</p>
                 </div>
             </div>
+
             <div id="form-bab3" class="form-section hidden">
                 <h2 class="text-3xl font-bold mb-6">Bab III: Metode Penelitian</h2>
                 <div class="sub-chapter-container">
@@ -112,7 +124,6 @@
                     <!-- Daftar sub-bab Bab IV akan muncul di sini -->
                 </div>
             </div>
-            <!-- PERUBAHAN SELESAI -->
             
             <div id="result-container" class="mt-8"></div>
             <footer class="w-full text-center p-4 text-xs text-muted mt-8">
