@@ -61,8 +61,8 @@ Tolong tuliskan uraian lengkap untuk sub-bab berikut: "${subChapterTitle}"`;
       generationConfig: { temperature: 0.7, topP: 0.9, maxOutputTokens: 8192 }
     };
 
-    const model = 'gemini-1.5-flash-latest';
-    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+    const model = 'gemini-1.5-flash';
+const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
     
     console.log(`🚀 Mengirim permintaan untuk sub-bab: "${subChapterTitle}"`);
     
